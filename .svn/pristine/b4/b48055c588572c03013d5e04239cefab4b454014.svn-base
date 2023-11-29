@@ -1,0 +1,47 @@
+package egovframework.ksdmWeb.general.insectForecast.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.ksdmWeb.common.vo.InsectForecastVo;
+import egovframework.ksdmWeb.general.insectForecast.service.InsectForecastService;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("insectForecastService")
+@Slf4j
+public class InsectForecastServiceImpl implements InsectForecastService{
+	
+	@Resource(name = "insectForecastMapper")
+	private InsectForecastMapper insectForecastMapper;
+	
+	@Override
+	public Map<String, Object> getForecastImage(InsectForecastVo insectForecastVo) {
+		
+		Map<String, Object> map = new HashMap<>();
+		
+		List<InsectForecastVo> insectForecastVos = insectForecastMapper.selectInsectImage(insectForecastVo);
+		
+		map.put("insectForecastVos", insectForecastVos);
+		
+		return map;
+	}
+
+	@Override
+	public void updateViews(String taskId) {
+		
+		try {
+			
+			insectForecastMapper.updateViews(taskId);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+	}
+}

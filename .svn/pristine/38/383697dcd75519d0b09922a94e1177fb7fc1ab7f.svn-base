@@ -1,0 +1,167 @@
+package egovframework.ksdmWeb.admin.taskAndResearch.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchService;
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchVo;
+import egovframework.ksdmWeb.admin.taskAndResearch.service.impl.TaskAndResearchMapper;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/admin/taskAndResearch/*")
+@Slf4j
+public class TaskAndResearchController {
+
+	@Resource(name = "taskAndResearcService")
+	private TaskAndResearchService taskAndResearchService;
+	
+	@Resource(name = "taskAndResearchMapper")
+	private TaskAndResearchMapper taskAndResearchMapper;
+	
+	@GetMapping("/researchTaskRegistPage.do")
+	public String taskRegistPage(ModelMap model) throws Exception {
+		log.debug("/researchTaskRegistPage.do");
+		
+		taskAndResearchService.getTaskList(model);
+		
+		return "admin/taskAndResearch/researchTaskRegistPage";
+	}
+	
+	@PostMapping("/researchTaskRegistConfirm.do")
+	@ResponseBody
+	public String researchTaskRegistConfirm(@RequestBody List<TaskAndResearchVo> taskAndResearchVos) throws Exception {
+		log.debug("/researchTaskRegistConfirm.do");
+		
+		taskAndResearchService.researchTaskRegistConfirm(taskAndResearchVos);
+		
+		return "success";
+	}
+	
+	@GetMapping("/participatedResearchListPage.do")
+	public String participatedResearchListPage() {
+		log.debug("/participatedResearchListPage.do");
+		
+		return "admin/taskAndResearch/participatedResearchListPage";
+	}
+	
+	@GetMapping("/getParticipatedResearchList.do")
+	@ResponseBody
+	public Map<String, Object> getParticipatedResearchList(@ModelAttribute PagingVo pagingVo) throws Exception {
+		log.debug("/getParticipatedResearchList.do");
+		
+		Map<String, Object> data = taskAndResearchService.getParticipatedResearchList(pagingVo);
+		
+		return data;
+	}
+	
+	@GetMapping("/subjectListPage.do")
+	public String subjectListPage(@ModelAttribute PagingVo pagingVo, ModelMap model) throws Exception {
+		log.debug("/subjectListPage.do");
+		
+		taskAndResearchService.getSubject(pagingVo, model);
+		
+		return "admin/taskAndResearch/subjectListPage";
+	}
+	
+	@PostMapping("/updateResearchStatus.do")
+	@ResponseBody
+	public Object updateResearchStatus(@RequestBody TaskAndResearchVo taskAndResearchVo) {
+		log.debug("<== {}", taskAndResearchVo);
+		
+		Map<String, Object> result = taskAndResearchService.updateResearchStatus(taskAndResearchVo);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@GetMapping("/researchTaskListPage.do")
+	public String researchTaskListPage() {
+		log.debug("/researchTaskListPage.do");
+		
+		return "admin/taskAndResearch/researchTaskListPage";
+	}
+	
+	@GetMapping("/getResearchTaskList.do")
+	@ResponseBody
+	public Map<String, Object> getResearchTaskList(@ModelAttribute PagingVo pagingVo, ModelMap model) throws Exception {
+		log.debug("/getResearchTaskList.do");
+		
+		Map<String, Object> data = taskAndResearchService.getResearchTaskList(pagingVo, model);
+		
+		return data;
+	}
+	
+	@GetMapping("/researchTaskModifyPage.do")
+	public String researchTaskModifyPage(@ModelAttribute TaskAndResearchVo taskAndResearchVo, ModelMap model) throws Exception {
+		log.debug("/researchTaskModifyPage.do");
+		
+		taskAndResearchService.getResearchTask(taskAndResearchVo, model);
+		
+		return "admin/taskAndResearch/researchTaskModifyPage";
+	}
+	
+	@PostMapping("/researchTaskModifyConfirm.do")
+	@ResponseBody
+	public String researchTaskModifyConfirm(@RequestBody TaskAndResearchVo taskAndResearchVo) {
+		log.debug("/researchTaskModifyConfirm.do");
+		
+		taskAndResearchMapper.updateResearchTask(taskAndResearchVo);
+		
+		return "success";
+	}
+	
+	@PostMapping("/researchTaskDeleteConfirm.do")
+	@ResponseBody
+	public Object researchTaskDeleteConfirm(@RequestBody Map<String, String> reciveData) {
+		
+		String researchTaskId = reciveData.get("researchTaskId");
+		log.debug("<== researchTaskId: {}", researchTaskId);
+		
+		Map<String, Object> result = taskAndResearchService.researchTaskDeleteConfirm(researchTaskId);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	/**
+	 * 과제및조사업무관리 > 조사데이터현황
+	 */
+	@GetMapping("/researchDataStatusPage.do")
+	public String researchDataStatusPage() {
+		log.debug("/researchDataStatusPage.do");
+		
+		return "admin/taskAndResearch/researchDataStatusPage";
+	}
+	
+	@GetMapping("/getSubListDataToExcel.do")
+	public void getSubListDataToExcel(@ModelAttribute PagingVo pagingVo, HttpServletResponse response) {
+		log.debug("<== {}", pagingVo);
+		
+		taskAndResearchService.getSubListDataToExcel(pagingVo, response);
+	}
+	
+	@PostMapping("/deleteSubVo.do")
+	@ResponseBody
+	public Object deleteSubVo(@RequestBody List<Integer> ids) {
+		log.debug("<== ids: {}", ids);
+		
+		Map<String, Object> result = taskAndResearchService.deleteSubVo(ids);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+}

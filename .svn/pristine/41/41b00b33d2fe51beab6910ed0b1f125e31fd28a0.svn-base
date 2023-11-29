@@ -1,0 +1,11 @@
+package egovframework.ksdmWeb.general.account.service.impl;
+
+import egovframework.ksdmWeb.security.UserVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("accountMapper")
+public interface AccountMapper {
+
+	public void insertAccount(UserVo admin) throws Exception;
+
+}

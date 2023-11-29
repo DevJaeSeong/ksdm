@@ -1,0 +1,9 @@
+package egovframework.ksdmWeb.admin.userManagement.service;
+
+import lombok.Data;
+
+@Data
+public class ResearchAreaVo {
+	private String researchAreaCode;
+	private String researchAreaName;
+}

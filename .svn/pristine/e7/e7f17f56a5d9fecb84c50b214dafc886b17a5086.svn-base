@@ -1,0 +1,74 @@
+package egovframework.ksdmWeb.general.account.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import egovframework.ksdmWeb.general.account.service.AccountService;
+import egovframework.ksdmWeb.security.UserAuthenticator;
+import egovframework.ksdmWeb.security.UserVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("accountService")
+@Slf4j
+public class AccountServiceImpl implements AccountService {
+	
+	@Resource(name = "accountMapper")
+	private AccountMapper accountMapper;
+
+	@Resource(name = "userAuthenticator")
+	private UserAuthenticator userAuthenticator;
+	
+	@Resource(name = "passwordEncoder")
+	private PasswordEncoder passwordEncoder;
+	
+	@Override
+	public void createAccount() {
+		
+		UserVo admin = new UserVo();
+		admin.setUserId("admin");
+		admin.setUserPw(passwordEncoder.encode("1234"));
+		
+		UserVo user = new UserVo();
+		user.setUserId("user");
+		user.setUserPw(passwordEncoder.encode("1234"));
+		
+		try {
+			
+			accountMapper.insertAccount(admin);
+			accountMapper.insertAccount(user);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public Map<String, Object> loginConfirm(UserVo userVo, HttpServletRequest request) {
+		log.debug("loginConfirm() 시작");
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			userAuthenticator.authenticateUser(userVo.getUserId(), userVo.getUserPw(), request);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+			
+			result.put("result", "fail");
+			log.error("사용자 인증에 실패하였습니다.");
+			e.printStackTrace();
+		}
+		
+		log.debug("loginConfirm() 끝");
+		return result;
+	}
+}

@@ -1,0 +1,26 @@
+package egovframework.ksdmWeb.common.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.vo.BoardVo;
+import egovframework.ksdmWeb.common.vo.InsectStatusVo;
+import egovframework.ksdmWeb.common.vo.InsectVo;
+import egovframework.ksdmWeb.common.vo.TaskVo;
+
+public interface CommonDataService {
+
+	public Map<String, Object> 	getInsectList(PagingVo pagingVo);
+	public InsectVo 			getInsectByinsectNum(String insectNum);
+	public List<InsectStatusVo> getInsectStatusByinsectNum(String insectNum);
+	public Map<String, Object> 	getBoardList(PagingVo pagingVo);
+	public BoardVo 				getBoardByBoardNum(String boardNum);
+	public Map<String, Object> 	getSubVoList(PagingVo pagingVo);
+	public Map<String, Object> 	getSubWaitList(PagingVo pagingVo);
+	public List<TaskVo> 		getAllTaskList();
+	public Map<String, Object> 	getForecastList(PagingVo pagingVo);
+	public ForecastVo 			getForecastById(String forecastId);
+	public Map<String, Object> 	searchInsect(PagingVo pagingVo);
+}

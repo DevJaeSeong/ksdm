@@ -1,0 +1,61 @@
+package egovframework.ksdmWeb.general.account.web;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.general.account.service.AccountService;
+import egovframework.ksdmWeb.security.UserVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class AccountController {
+
+	@Resource(name = "accountService")
+	private AccountService accountService;
+	
+	@GetMapping("/loginPage.do")
+	public String loginPage() {
+		log.debug("/loginPage.do");
+		
+		return "general/login/loginPage";
+	}
+	
+	/*
+	@GetMapping("/createAccount.do")
+	public void createAccount() {
+		log.debug("/createAccount.do");
+		
+		accountService.createAccount();
+	}
+	*/
+	
+	@PostMapping("/loginConfirm.do")
+	@ResponseBody
+	public Object loginConfirm(@RequestBody UserVo userVo, HttpServletRequest request) {
+		log.debug("<== {}", userVo);
+		
+		Map<String, Object> result = accountService.loginConfirm(userVo, request);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@GetMapping("/logout.do")
+	public String logout(HttpSession session) {
+		log.debug("/logout.do");
+		
+		session.invalidate();
+		
+		return "redirect:/main.do";
+	}
+}

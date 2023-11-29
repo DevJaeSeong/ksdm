@@ -1,0 +1,255 @@
+package egovframework.ksdmWeb.common.util.fileUpload;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.common.vo.FileVo;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 파일 업로드, 다운로드 등 기능을 관리하는 클래스.
+ */
+@Component("fileManager")
+@Slf4j
+public class FileManager {
+
+	@Resource(name = "fileMapper")
+	private FileMapper fileMapper;
+	
+	/**
+	 * 파일을 저장하고 저장된 파일 정보를 DB에 등록.
+	 * 
+	 * @param file 업로드할 파일
+	 * @param targetDirectory 참고하려는 디렉토리
+	 * @return 업로드 성공시 업로드된 파일명 반환, 실패시 null
+	 */
+	public String fileUpload(MultipartFile file, String targetDirectory) {
+		log.debug("fileUpload() 시작");
+		
+		if (file.isEmpty()) {
+			
+			log.debug("파일이 비어있습니다.");
+			log.debug("fileUpload() 끝");
+			return null;
+		}
+		
+		// 해당 디렉토리가 없을경우 생성
+        File directory = new File(targetDirectory);
+        if (!directory.exists()) directory.mkdirs();
+        
+        // 실제 업로드된 파일이름
+        String fileName = UUID.randomUUID().toString();
+		
+		try {
+			
+			// 파일 업로드 수행
+			file.transferTo(new File(targetDirectory + fileName));
+			
+			// 파일 정보 DB 저장
+			FileVo fileVo = new FileVo();
+			fileVo.setOriFileName(file.getOriginalFilename());
+			fileVo.setSavedFileName(fileName);
+			fileVo.setFilePath(targetDirectory);
+			
+			fileMapper.insertFileVo(fileVo);
+			
+		} catch (Exception e) {
+			
+			fileName = null;
+			log.error("파일업로드 실패.");
+			e.printStackTrace();
+		}
+		
+		log.debug("==> {}", fileName);
+		log.debug("fileUpload() 끝");
+		return fileName;
+	}
+
+	/**
+	 * 클라이언트에게 요청한 파일 전송.
+	 * 
+	 * @param savedFileName 저장된 파일 이름
+	 * @param savedFilePath 파일이 저장된 경로
+	 * @param response
+	 * @return 업로드된 파일 가져오기 성공시 파일과 함께 200(ok)응답코드 반환, 실패시 404(not found)응답코드 반환
+	 */
+	public void fileDownload(String savedFileName, HttpServletResponse response) {
+		log.debug("fileDownload() 시작");
+		
+		String filePath = null;
+		
+		try {
+			
+			filePath = fileMapper.getFilePath(savedFileName);
+			
+		} catch (Exception e) {
+			
+			log.error("DB 에러");
+			e.printStackTrace();
+		}
+		
+		if (filePath == null) {
+			
+			log.debug("파일경로가 저장되어있지 않거나 찾을 수 없습니다.");
+			log.debug("fileDownload() 끝");
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+		
+		File file = new File(filePath + savedFileName);
+		
+		if (!file.exists()) {
+			
+			log.debug("파일이 존재하지 않습니다.");
+			log.debug("fileDownload() 끝");
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+		
+	    try {
+
+	        FileInputStream fileInputStream = new FileInputStream(file);
+	        OutputStream outputStream = response.getOutputStream();
+
+	        byte[] buffer = new byte[4096];
+	        int bytesRead;
+	        
+	        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+	        	
+	            outputStream.write(buffer, 0, bytesRead);
+	        }
+
+	        outputStream.flush();
+	        log.debug("파일 전송 완료.");
+	        
+	        fileInputStream.close();
+	        outputStream.close();
+	        response.setStatus(HttpServletResponse.SC_OK);
+	        
+	    } catch (FileNotFoundException e) {
+	    	
+	        log.error("파일을 찾을 수 없습니다.");
+	        e.printStackTrace();
+	        log.debug("fileDownload() 끝");
+	        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	        
+	    } catch (IOException e) {
+	    	
+	        log.error("파일 다운로드 중 오류 발생: {}", e.getMessage());
+	        e.printStackTrace();
+	        log.debug("fileDownload() 끝");
+	        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	    }
+
+	    log.debug("fileDownload() 끝");
+	}
+
+	/**
+	 * 저장된 파일을 삭제하고 파일정보를 DB에서 제거.
+	 * 
+	 * @param savedFileName 저장된 파일 이름
+	 * @param savedFilePath 파일이 저장된 경로
+	 * @return 삭제 성공시 1, 실패시 0
+	 */
+	public int deleteFile(String savedFileName, String savedFilePath) {
+		log.debug("deleteFile() 시작");
+		log.debug("<== {}", savedFileName);
+		
+		boolean result = false;
+		File file = new File(savedFilePath + savedFileName);
+		
+		if (!file.exists()) {
+			 
+			log.error("파일이 존재하지 않습니다.");
+			log.debug("deleteFile() 끝");
+			return 0;
+		}
+		
+		try {
+			
+			result = file.delete();
+			fileMapper.deleteFileVoBySavedFileName(savedFileName);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		 
+		log.debug("파일삭제 성공여부: {}", result);
+		log.debug("deleteFile() 끝");
+		return result ? 1 : 0;
+	}
+	
+	/**
+	 * 파일 여러개 삭제.
+	 * 
+	 * @param savedFileNames 저장된 파일 이름들이 담긴 리스트
+	 * @return 
+	 */
+	public int deleteFiles(List<String> savedFileNames) {
+		log.debug("deleteFile() 시작");
+		
+		int result = 0;
+		
+		for (String savedFileName : savedFileNames) {
+			
+			String filePath;
+			
+			try {
+				
+				filePath = fileMapper.getFilePath(savedFileName);
+				
+			} catch (Exception e) {
+				
+				log.error("DB에러");
+				e.printStackTrace();
+				continue;
+			}
+			
+			result += deleteFile(savedFileName, filePath);
+		}
+		
+		log.debug("삭제한 파일 개수: {}", result);
+		log.debug("deleteFiles() 끝");
+		return result;
+	}
+	
+	/**
+	 * 저장된 파일 이름으로 삭제.
+	 * 
+	 * @param savedFileName 저장된 파일 이름
+	 * @return 성공시 1, 실패시 0
+	 */
+	public int deleteFileBySavedFileName(String savedFileName) {
+		log.debug("deleteFileBySavedFileName() 시작");
+		log.debug("<== {}", savedFileName);
+		
+		int result = 0;
+		
+		try {
+			
+			result = deleteFile(savedFileName, fileMapper.getFilePath(savedFileName));
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("==> result: {}", result);
+		log.debug("deleteFileBySavedFileName() 끝");
+		return result;
+	}
+}

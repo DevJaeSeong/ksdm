@@ -1,0 +1,20 @@
+package egovframework.ksdmWeb.admin.userManagement.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.admin.userManagement.service.AuthorityVo;
+import egovframework.ksdmWeb.admin.userManagement.service.ResearchAreaVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.security.UserDetailVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("userManagementMapper")
+public interface UserManagementMapper {
+
+	public int getUserListTotalCount(PagingVo pagingVo) throws Exception;
+	public List<UserDetailVo> getUserList(PagingVo pagingVo) throws Exception;
+	public List<AuthorityVo> getAllAuthorityList() throws Exception;
+	public List<ResearchAreaVo> getAllResearchAreaList() throws Exception;
+	public UserDetailVo getUserDetailById(String userId) throws Exception;
+	public void updateUserDetail(UserDetailVo userDetailVo) throws Exception;
+}

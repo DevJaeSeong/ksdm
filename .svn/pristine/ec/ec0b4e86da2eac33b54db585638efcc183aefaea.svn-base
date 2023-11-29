@@ -1,0 +1,201 @@
+package egovframework.ksdmWeb.user.research.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.impl.CommonDataMapper;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.ksdmWeb.user.research.service.ResearchService;
+import egovframework.ksdmWeb.user.research.service.ResearchVo;
+import egovframework.ksdmWeb.user.research.service.impl.ResearchMapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/user/research/*")
+@Slf4j
+public class ResearchController {
+	
+	@Resource(name = "researchService")
+	private ResearchService researchService;
+	
+	@Resource(name = "researchMapper")
+	private ResearchMapper researchMapper;
+	
+	@Resource(name = "commonDataMapper")
+	private CommonDataMapper commonDataMapper;
+	
+	@GetMapping("/researchListPage.do")
+	public String researchListPage() {
+		log.debug("/researchListPage.do");
+		
+		return "user/research/researchListPage";
+	}
+	
+	@GetMapping("/getResearchList.do")
+	@ResponseBody
+	public Map<String, Object> getResearchList(@ModelAttribute PagingVo pagingVo) throws Exception {
+		log.debug("/getResearchList.do");
+		
+		Map<String, Object> data = researchService.getResearchList(pagingVo);
+		
+		log.debug("<== {} " + data);
+		
+		return data;
+	}
+	
+	@GetMapping("/researchRegist.do")
+	@ResponseBody
+	public String researchRegist(@ModelAttribute ResearchVo researchVo) throws Exception {
+		log.debug("/researchRegist.do");
+		
+		log.debug("==> researchTaskId: {} " + researchVo.getResearchTaskId());
+		
+		researchService.researchRegist(researchVo);
+		
+		String data = "success";
+		
+		return data;
+	}
+	
+	@GetMapping("/participatedRresearchListPage.do")
+	public String participatedRresearchListPage() {
+		log.debug("/participatedRresearchListPage.do");
+		
+		return "user/research/participatedResearchListPage";
+	}
+	
+	@GetMapping("/getParticipatedResearchList.do")
+	@ResponseBody
+	public Map<String, Object> getParticipatedResearchList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> data = researchService.getParticipatedResearchList(pagingVo);
+		
+		log.debug("==> {}", data);
+		return data;
+	}
+	
+	@GetMapping("/subjectListPage.do")
+	public String subjectListPage(@ModelAttribute ResearchVo researchVo, ModelMap model) {
+		log.debug("<== {}", researchVo);
+		
+		model.addAttribute("participatedResearchId", researchVo.getParticipatedResearchId());
+		model.addAttribute("researchTaskId", researchVo.getResearchTaskId());
+		model.addAttribute("researchStatusCode", researchVo.getResearchStatusCode());
+		
+		researchVo = researchMapper.selectResearchDetail(researchVo.getResearchTaskId());
+		model.addAttribute("taskName", researchVo.getTaskName());
+		model.addAttribute("researchTaskName", researchVo.getResearchTaskName());
+		
+		return "user/research/subjectListPage";
+	}
+	
+	@GetMapping("/getSubjectList.do")
+	@ResponseBody
+	public Map<String, Object> getSubjectList(@ModelAttribute PagingVo pagingVo) throws Exception {
+		log.debug("<== {}", pagingVo.toString());
+		
+		Map<String, Object> data = researchService.getSubjectList(pagingVo);
+		
+		log.debug("==> " + data);
+		return data;
+	}
+	
+	@GetMapping("/subjectRegistPage.do")
+	public String subjectRegistPage(@ModelAttribute PagingVo pagingVo, ModelMap model) throws Exception {
+	    log.debug("/subjectRegistPage.do");
+
+	    researchService.getSubjectDefaultValue(pagingVo, model); // model 객체에 데이터를 담음
+
+	    return "user/research/subjectRegistPage";
+	}
+	
+	@PostMapping("/subjectRegistConfirm.do")
+	@ResponseBody
+	public Object subjectRegistConfirm(@RequestBody SubVo subVo) {
+		log.debug("<== {}", subVo.toString());
+		
+		Map<String, Object> result = researchService.subjectRegistConfirm(subVo);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@GetMapping("/subjectDetailPage.do")
+	public String subjectDetailPage(@ModelAttribute ResearchVo researchVo, ModelMap model) throws Exception {
+	    log.debug("/subjectDetailPage.do");
+
+	    researchService.getSubjectDetail(researchVo, model);
+	    
+	    log.debug("==> {}", model.get("subVo"));
+	    return "user/research/subjectDetailPage";
+	}
+	
+	@PostMapping("/subjectDelete.do")
+	@ResponseBody
+	public Object subjectDelete(@RequestBody ResearchVo researchVo) throws Exception {
+	    log.debug("<== {}", researchVo.toString());
+
+	    Map<String, Object> result = researchService.subjectDelete(researchVo);
+	    
+	    log.debug("==> {}", result);
+	    return result;
+	}
+	
+	@GetMapping("/subjectModifyPage.do")
+	public String subjectModifyPage(@ModelAttribute ResearchVo researchVo, ModelMap model) throws Exception {
+	    log.debug("/subjectModifyPage.do");
+
+	    researchService.getSubjectDetail(researchVo, model);
+	    
+	    log.debug("==> {}", model.get("subVo"));
+	    return "user/research/subjectModifyPage";
+	}
+	
+	@PostMapping("/subjectModifyConfirm.do")
+	@ResponseBody
+	public Object subjectModifyConfirm(@RequestBody SubVo subVo) {
+		log.debug("/subjectModifyConfirm.do");
+		
+		Map<String, Object> result = researchService.subjectModifyConfirm(subVo);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@PostMapping("/updateResearchStatus.do")
+	@ResponseBody
+	public Object updateResearchStatus(@RequestBody ResearchVo researchVo) {
+	    log.debug("<== {}", researchVo);
+
+	    Map<String, Object> result = researchService.updateResearchStatus(researchVo);
+
+	    log.debug("==> {}", result);
+	    return result;
+	}
+	
+	@GetMapping("/forecastImgaeUploadPage.do")
+	public String forecastImgaeUploadPage(ModelMap model) throws Exception {
+	    log.debug("/forecastImgaeUploadPage.do");
+	    
+	    List<TaskAndResearchVo> taskAndResearchVos = commonDataMapper.selectTaskList();
+	    
+	    model.addAttribute("taskAndResearchVos", taskAndResearchVos);
+		model.addAttribute("taskAndResearchVosSize", taskAndResearchVos.size());
+
+	    return "user/research/forecastImgaeUploadPage";
+	}
+}

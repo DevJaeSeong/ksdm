@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.user.research.service.impl.ResearchMapper">
+
+	<resultMap id="ResearchVo" type="ResearchVo">
+	    <result property="taskName" 						column="TASK_NAME"/>
+	    <result property="researchTaskId" 					column="RESEARCH_TASK_ID"/>
+	    <result property="researchTaskName" 				column="RESEARCH_TASK_NAME"/>
+	    <result property="participatedResearchId" 			column="PARTICIPATED_RESEARCH_ID"/>
+	    <result property="researchStatusCode" 				column="RESEARCH_STATUS_CODE"/>
+	    <result property="researchStatusName" 				column="RESEARCH_STATUS_NAME"/>
+	</resultMap>
+		
+	<resultMap id="SubVoMap" type="SubVo">
+		<result property="taskName" 							column="TASK_NAME"/>
+		<result property="researchTaskName" 					column="RESEARCH_TASK_NAME"/>
+		<result property="subDate" 								column="SUB_DATE"/>
+		<result property="subStartTime" 						column="SUB_START_TIME"/>
+		<result property="subEndTime" 							column="SUB_END_TIME"/>
+		<result property="subResearchGroup" 					column="SUB_RESEARCH_GROUP"/>
+		<result property="subResearchMembers" 					column="SUB_RESEARCH_MEMBERS"/>
+		<result property="subWeather" 							column="SUB_WEATHER"/>
+		<result property="subTemperature" 						column="SUB_TEMPERATURE"/>
+		<result property="subResearchLocation" 					column="SUB_RESEARCH_LOCATION"/>
+		<result property="subGpsN" 								column="SUB_GPS_N"/>
+		<result property="subGpsE" 								column="SUB_GPS_E"/>
+		<result property="subAltitude" 							column="SUB_ALTITUDE"/>
+		<result property="subLocationCategory" 					column="SUB_LOCATION_CATEGORY"/>
+		<result property="subOccurrenceStatus" 					column="SUB_OCCURRENCE_STATUS"/>
+		<result property="subInsectName" 						column="SUB_INSECT_NAME"/>
+		<result property="subInsectStatus" 						column="SUB_INSECT_STATUS"/>
+		<result property="subNum" 								column="SUB_NUM"/>
+		<result property="subPlantName" 						column="SUB_PLANT_NAME"/>
+		<result property="subOccurrenceDegree" 					column="SUB_OCCURRENCE_DEGREE"/>
+		<result property="subOccurrenceLocationInPlant" 		column="SUB_OCCURRENCE_LOCATION_IN_PLANT"/>
+		<result property="subEtcPlant" 							column="SUB_ETC_PLANT"/>
+		<result property="subEtcLocation" 						column="SUB_ETC_LOCATION"/>
+		<result property="subDistanceFromRoad" 					column="SUB_DISTANCE_FROM_ROAD"/>
+		<result property="subRoadCategory" 						column="SUB_ROAD_CATEGORY"/>
+		<result property="participatedResearchId" 				column="PARTICIPATED_RESEARCH_ID"/>
+	</resultMap>
+	
+	<select id="selectResearchList" parameterType="PagingVo" resultMap="ResearchVo">
+		SELECT
+			RESEARCH_TASK_ID, 
+			RESEARCH_TASK_NAME,
+			TASK_TB.TASK_NAME
+		FROM
+			RESEARCH_TASK_TB
+		JOIN
+			TASK_TB ON RESEARCH_TASK_TB.TASK_ID = TASK_TB.TASK_ID
+		WHERE
+			RESEARCH_TASK_TB.IS_ENABLED > 0
+			<if test='searchKeyword != null and searchKeyword != ""'>
+			    AND RESEARCH_TASK_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+		 	</if>
+	 	ORDER BY 
+	 		RESEARCH_TASK_ID DESC
+	 	LIMIT 
+	 		#{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="selectResearchTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+			RESEARCH_TASK_TB
+		WHERE
+			RESEARCH_TASK_TB.IS_ENABLED > 0
+		<if test='searchKeyword != null and searchKeyword != ""'>
+		    WHERE
+		    	RESEARCH_TASK_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+	 	</if>
+	</select>
+	
+	<insert id="insertResearch" parameterType="ResearchVo">
+		INSERT INTO
+			PARTICIPATED_RESEARCH_TB
+			(
+			 USER_ID,
+			 RESEARCH_STATUS_CODE,
+			 RESEARCH_TASK_ID,
+			 RESEARCH_SUBMISSION_DATE
+			)
+		VALUES
+			(
+			 #{userId},
+			 '1001',
+			 #{researchTaskId},
+			 #{researchSubmissionDate}
+			)
+	</insert>
+	
+	<select id="selectParticipatedResearchList"  parameterType="PagingVo" resultMap="ResearchVo">
+		SELECT
+			PARTICIPATED_RESEARCH_ID AS PARTICIPATED_RESEARCH_ID, 
+			RESEARCH_TASK_TB.RESEARCH_TASK_NAME AS RESEARCH_TASK_NAME, 
+			TASK_TB.TASK_NAME AS TASK_NAME, 
+			RESEARCH_STATUS_TB.RESEARCH_STATUS_CODE AS RESEARCH_STATUS_CODE,
+			RESEARCH_STATUS_TB.RESEARCH_STATUS_NAME AS RESEARCH_STATUS_NAME,
+			PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE AS RESEARCH_STATUS_CODE,
+			PARTICIPATED_RESEARCH_TB.RESEARCH_TASK_ID AS RESEARCH_TASK_ID
+		FROM
+			PARTICIPATED_RESEARCH_TB
+		JOIN
+			RESEARCH_TASK_TB
+		ON 
+			PARTICIPATED_RESEARCH_TB.RESEARCH_TASK_ID = RESEARCH_TASK_TB.RESEARCH_TASK_ID
+		JOIN
+			TASK_TB
+		ON 
+			TASK_TB.TASK_ID = RESEARCH_TASK_TB.TASK_ID
+		JOIN
+			RESEARCH_STATUS_TB
+		ON 
+			PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE = RESEARCH_STATUS_TB.RESEARCH_STATUS_CODE
+		WHERE
+			USER_ID = #{userId}
+		<if test='researchStatusCode != null and researchStatusCode != ""'>
+		    AND
+		    	PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE = #{researchStatusCode}
+	 	</if>
+		<if test='searchKeyword != null and searchKeyword != ""'>
+		    AND
+		    	RESEARCH_TASK_TB.RESEARCH_TASK_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+	 	</if>
+	 	ORDER BY 
+	 		PARTICIPATED_RESEARCH_ID
+	 	DESC
+	 	LIMIT 
+	 		#{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="selectParticipatedResearchTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+			PARTICIPATED_RESEARCH_TB
+		JOIN
+			RESEARCH_TASK_TB
+		ON
+			PARTICIPATED_RESEARCH_TB.RESEARCH_TASK_ID = RESEARCH_TASK_TB.RESEARCH_TASK_ID
+		JOIN
+			RESEARCH_STATUS_TB
+		ON 
+			PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE = RESEARCH_STATUS_TB.RESEARCH_STATUS_CODE
+		WHERE
+			USER_ID = #{userId}
+		<if test='researchStatusCode != null and researchStatusCode != ""'>
+		    AND
+		    	PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE = #{researchStatusCode}
+	 	</if>
+		<if test='searchKeyword != null and searchKeyword != ""'>
+		    AND
+		    	RESEARCH_TASK_TB.RESEARCH_TASK_NAME LIKE CONCAT ('%', #{searchKeyword}, '%')
+	 	</if>
+	</select>
+	
+	<select id="selectSubjectList"  parameterType="PagingVo" resultMap="SubVoMap">
+		SELECT
+			PARTICIPATED_RESEARCH_ID,
+			SUB_NUM, 
+			SUB_PLANT_NAME,
+			SUB_INSECT_NAME,
+			SUB_OCCURRENCE_STATUS
+		FROM
+			SUB_WAIT_TB
+		WHERE
+			PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+	 	ORDER BY 
+	 		SUB_NUM DESC
+	 	LIMIT 
+	 		#{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="selectSubjectTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			SUB_WAIT_TB
+		WHERE
+		   PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+	</select>
+			
+	<insert id="insertSubject" parameterType="SubVo">
+		INSERT INTO
+			SUB_WAIT_TB
+			(
+				TASK_NAME
+				, RESEARCH_TASK_NAME
+				, SUB_DATE
+				<if test="subStartTime != '' and subStartTime != null">
+				, SUB_START_TIME
+				</if>
+				<if test="subEndTime != '' and subEndTime != null">
+				, SUB_END_TIME
+				</if>
+				, SUB_RESEARCH_GROUP
+				, SUB_RESEARCH_MEMBERS
+				, SUB_WEATHER
+				, SUB_TEMPERATURE
+				, SUB_RESEARCH_LOCATION
+				, SUB_GPS_N
+				, SUB_GPS_E
+				, SUB_ALTITUDE
+				, SUB_LOCATION_CATEGORY
+				, SUB_OCCURRENCE_STATUS
+				, SUB_INSECT_NAME
+				, SUB_INSECT_STATUS
+				, SUB_NUM
+				, SUB_PLANT_NAME
+				, SUB_OCCURRENCE_DEGREE
+				, SUB_OCCURRENCE_LOCATION_IN_PLANT
+				, SUB_ETC_PLANT
+				, SUB_ETC_LOCATION
+				, SUB_DISTANCE_FROM_ROAD
+				, SUB_ROAD_CATEGORY
+				, PARTICIPATED_RESEARCH_ID
+			)
+		VALUES
+			(
+				#{taskName}
+				, #{researchTaskName}
+				, #{subDate}
+				<if test="subStartTime != '' and subStartTime != null">
+				, #{subStartTime}
+				</if>
+				<if test="subEndTime != '' and subEndTime != null">
+				, #{subEndTime}
+				</if>
+				, #{subResearchGroup}
+				, #{subResearchMembers}
+				, #{subWeather}
+				, #{subTemperature}
+				, #{subResearchLocation}
+				, #{subGpsN}
+				, #{subGpsE}
+				, #{subAltitude}
+				, #{subLocationCategory}
+				, #{subOccurrenceStatus}
+				, #{subInsectName}
+				, #{subInsectStatus}
+				, #{subNum}
+				, #{subPlantName}
+				, #{subOccurrenceDegree}
+				, #{subOccurrenceLocationInPlant}
+				, #{subEtcPlant}
+				, #{subEtcLocation}
+				, #{subDistanceFromRoad}
+				, #{subRoadCategory}
+				, #{participatedResearchId}
+			)
+	</insert>
+	
+	<select id="selectSubjectDetail" parameterType="ResearchVo" resultMap="SubVoMap">
+		SELECT
+			TASK_NAME
+			, RESEARCH_TASK_NAME
+			, SUB_DATE
+			, SUB_START_TIME
+			, SUB_END_TIME
+			, SUB_RESEARCH_GROUP
+			, SUB_RESEARCH_MEMBERS
+			, SUB_WEATHER
+			, SUB_TEMPERATURE
+			, SUB_RESEARCH_LOCATION
+			, SUB_GPS_N
+			, SUB_GPS_E
+			, SUB_ALTITUDE
+			, SUB_LOCATION_CATEGORY
+			, SUB_OCCURRENCE_STATUS
+			, SUB_INSECT_NAME
+			, SUB_INSECT_STATUS
+			, SUB_NUM
+			, SUB_PLANT_NAME
+			, SUB_OCCURRENCE_DEGREE
+			, SUB_OCCURRENCE_LOCATION_IN_PLANT
+			, SUB_ETC_PLANT
+			, SUB_ETC_LOCATION
+			, SUB_DISTANCE_FROM_ROAD
+			, SUB_ROAD_CATEGORY
+			, PARTICIPATED_RESEARCH_ID
+		FROM
+			SUB_WAIT_TB
+		WHERE
+			SUB_NUM = #{subjectNum}
+		AND
+			PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+	</select>
+	
+	<delete id="deleteSubject" parameterType="ResearchVo">
+		DELETE 
+		FROM 
+			SUB_WAIT_TB
+		WHERE
+			SUB_NUM = #{subjectNum}
+		AND
+			PARTICIPATED_RESEARCH_ID = #{participatedResearchId} 
+	</delete>
+	
+	<update id="updateSubject" parameterType="SubVo">
+		UPDATE 
+			SUB_WAIT_TB
+		SET
+			SUB_DATE = #{subDate}
+			<if test="subStartTime != '' and subStartTime != null">
+			, SUB_START_TIME = #{subStartTime}
+			</if>
+			<if test="subEndTime != '' and subEndTime != null">
+			, SUB_END_TIME = #{subEndTime}
+			</if>
+			, SUB_RESEARCH_GROUP = #{subResearchGroup}
+			, SUB_RESEARCH_MEMBERS = #{subResearchMembers}
+			, SUB_WEATHER = #{subWeather}
+			, SUB_TEMPERATURE = #{subTemperature}
+			, SUB_RESEARCH_LOCATION = #{subResearchLocation}
+			, SUB_GPS_N = #{subGpsN}
+			, SUB_GPS_E = #{subGpsE}
+			, SUB_ALTITUDE = #{subAltitude}
+			, SUB_LOCATION_CATEGORY = #{subLocationCategory}
+			, SUB_OCCURRENCE_STATUS = #{subOccurrenceStatus}
+			, SUB_INSECT_NAME = #{subInsectName}
+			, SUB_INSECT_STATUS = #{subInsectStatus}
+			, SUB_NUM = #{subNum}
+			, SUB_PLANT_NAME = #{subPlantName}
+			, SUB_OCCURRENCE_DEGREE = #{subOccurrenceDegree}
+			, SUB_OCCURRENCE_LOCATION_IN_PLANT = #{subOccurrenceLocationInPlant}
+			, SUB_ETC_PLANT = #{subEtcPlant}
+			, SUB_ETC_LOCATION = #{subEtcLocation}
+			, SUB_DISTANCE_FROM_ROAD = #{subDistanceFromRoad}
+			, SUB_ROAD_CATEGORY = #{subRoadCategory}
+			, MOD_DATETIME = NOW()
+		WHERE
+			PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+		AND
+			SUB_NUM = #{subNum}
+	</update>
+	
+	<update id="updateResearchStatus">
+		UPDATE 
+			PARTICIPATED_RESEARCH_TB
+		SET
+			RESEARCH_STATUS_CODE = #{researchStatusCode}
+		WHERE 
+			PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+	</update>
+	
+	<select id="selectResearchDetail" resultMap="ResearchVo">
+		SELECT 
+			RESEARCH_TASK_TB.RESEARCH_TASK_NAME, 
+			TASK_TB.TASK_NAME
+		FROM
+			RESEARCH_TASK_TB
+		JOIN
+			TASK_TB
+		ON 
+			RESEARCH_TASK_TB.TASK_ID = TASK_TB.TASK_ID
+		WHERE
+			RESEARCH_TASK_ID = #{researchTaskId}
+	</select>
+	
+	<select id="getNameTaskAndResearch" parameterType="int" resultMap="SubVoMap">
+		SELECT
+			T.TASK_NAME AS TASK_NAME
+			, R.RESEARCH_TASK_NAME  AS RESEARCH_TASK_NAME
+		FROM
+			PARTICIPATED_RESEARCH_TB AS P
+		LEFT JOIN
+			RESEARCH_TASK_TB AS R ON P.RESEARCH_TASK_ID = R.RESEARCH_TASK_ID 
+		LEFT JOIN
+			TASK_TB AS T ON R.TASK_ID = T.TASK_ID
+		WHERE
+			P.PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+	</select>
+	
+</mapper>

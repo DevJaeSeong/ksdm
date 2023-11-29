@@ -1,0 +1,37 @@
+package egovframework.ksdmWeb.common.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.vo.BoardVo;
+import egovframework.ksdmWeb.common.vo.InsectStatusVo;
+import egovframework.ksdmWeb.common.vo.InsectVo;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.ksdmWeb.common.vo.TaskVo;
+import egovframework.ksdmWeb.common.vo.UserInsectVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("commonDataMapper")
+public interface CommonDataMapper {
+
+	public List<InsectVo> getInsectList(PagingVo pagingVo) throws Exception;
+	public int getInsectListTotalCount(PagingVo pagingVo) throws Exception;
+	public InsectVo getInsectByinsectNum(String insectNum) throws Exception;
+	public List<InsectStatusVo> getInsectStatusByinsectNum(String insectNum) throws Exception;
+	public int getBoardListTotalCount(PagingVo pagingVo) throws Exception;
+	public List<BoardVo> getBoardList(PagingVo pagingVo) throws Exception;
+	public BoardVo getBoardByBoardNum(String boardNum) throws Exception;
+	public List<TaskAndResearchVo> selectTaskList() throws Exception;
+	public int getSubVoListTotalCount(PagingVo pagingVo) throws Exception;
+	public int getSubWaitListTotalCount(PagingVo pagingVo) throws Exception;
+	public List<SubVo> getSubVoList(PagingVo pagingVo) throws Exception;
+	public List<SubVo> getSubWaitList(PagingVo pagingVo) throws Exception;
+	public List<TaskVo> getAllTaskList() throws Exception;
+	public int getForecastListTotalCount(PagingVo pagingVo) throws Exception;
+	public List<ForecastVo> getForecastList(PagingVo pagingVo) throws Exception;
+	public ForecastVo getForecastById(String taskId) throws Exception;
+	public int selectInsectTotalCount(PagingVo pagingVo) throws Exception;
+	public List<UserInsectVo> selectInsectList(PagingVo pagingVo) throws Exception;
+}

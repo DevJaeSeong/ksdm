@@ -1,0 +1,5 @@
+package egovframework.ksdmWeb.general.insectInfo.service;
+
+public interface InsectInfoService {
+
+}

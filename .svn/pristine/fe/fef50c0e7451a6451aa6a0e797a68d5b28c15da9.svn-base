@@ -1,0 +1,11 @@
+package egovframework.ksdmWeb.general.insectDistribution.service.impl;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.general.insectDistribution.vo.InsectDistributionVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("insectDistributionMapper")
+public interface InsectDistributionMapper {
+
+	public InsectDistributionVo getDistributionVo(PagingVo pagingVo) throws Exception;
+}

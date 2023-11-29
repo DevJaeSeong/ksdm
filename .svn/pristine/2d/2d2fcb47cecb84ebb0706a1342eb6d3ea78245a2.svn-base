@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.security.SecurityMapper">
+	
+	<resultMap id="UserVoMap" type="UserVo">
+        <result property="userId" 					column="USER_ID"/>
+        <result property="userPw" 					column="USER_PW"/>
+        <result property="authorityId" 				column="AUTHORITY_ID"/>
+        <result property="isAccountNonExpired" 		column="IS_ACCOUNT_NON_EXPIRED"/>
+        <result property="isAccountNonLocked" 		column="IS_ACCOUNT_NON_LOCKED"/>
+        <result property="isCredentialsNonExpired" 	column="IS_CREDENTIALS_NON_EXPIRED"/>
+        <result property="isEnabled" 				column="IS_ENABLED"/>
+    </resultMap>
+    
+	<resultMap id="UserDetailVoMap" type="UserDetailVo">
+        <result property="userId" 					column="USER_ID"/>
+        <result property="userName" 				column="USER_NAME"/>
+        <result property="userPhone" 				column="USER_PHONE"/>
+        <result property="researchAreaCode" 		column="RESEARCH_AREA_CODE"/>
+        <result property="userNote" 				column="USER_NOTE"/>
+        <result property="regId" 					column="REG_ID"/>
+        <result property="regDate" 					column="REG_DATE"/>
+    </resultMap>
+	
+	<select id="getUserById" parameterType="String" resultMap="UserVoMap">
+		SELECT 
+			USER_ID
+			, USER_PW
+			, AUTHORITY_ID
+			, IS_ACCOUNT_NON_EXPIRED
+			, IS_ACCOUNT_NON_LOCKED
+			, IS_CREDENTIALS_NON_EXPIRED
+			, IS_ENABLED
+		FROM 
+			USER_INFO_TB 
+		WHERE 
+			USER_ID = #{userId} 
+	</select>
+	
+	<select id="getUserDetailById" parameterType="String" resultMap="UserDetailVoMap">
+		SELECT 
+			USER_ID
+			, USER_NAME
+			, USER_PHONE
+			, RESEARCH_AREA_CODE
+			, USER_NOTE
+			, REG_ID
+			, REG_DATE
+		FROM 
+			USER_INFO_TB 
+		WHERE 
+			USER_ID = #{userId} 
+	</select>
+	
+	<update id="updatePassword" parameterType="UserVo">
+		UPDATE
+			USER_INFO_TB
+		SET
+			USER_PW = #{userPw}
+		WHERE
+			USER_ID = #{userId}
+	</update>
+	
+	<select id="getUserCountById" parameterType="String" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM 
+			USER_INFO_TB 
+		WHERE 
+			USER_ID = #{userId} 
+	</select>
+	
+	<insert id="insertUser" parameterType="UserDetailVo">
+		INSERT INTO
+			USER_INFO_TB
+			(
+				USER_ID
+				,USER_PW
+				,USER_NAME
+				,USER_PHONE
+				,RESEARCH_AREA_CODE
+				,USER_NOTE
+				,REG_ID
+				,AUTHORITY_ID
+			)
+			VALUES
+			(
+				#{userId}
+				, #{userPw}
+				, #{userName}
+				, #{userPhone}
+				, #{researchAreaCode}
+				, #{userNote}
+				, #{regId}
+				, #{authorityId}
+			)
+	</insert>
+	
+</mapper>

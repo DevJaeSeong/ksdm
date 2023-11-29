@@ -1,0 +1,39 @@
+package egovframework.ksdmWeb.admin.forecast.vo;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class ForecastVo {
+	
+	private String forecastId;
+	private String forecastName;
+	private String forecastInsect;
+	
+	private MultipartFile pngFile;
+	private MultipartFile pdfFile;
+	private MultipartFile tifFile;
+	private MultipartFile jpgFile;
+	private MultipartFile programFile;
+	private MultipartFile menualFile;
+	
+	private String pngFileName;
+	private String pdfFileName;
+	private String tifFileName;
+	private String jpgFileName;
+	private String programFileName;
+	private String menualFileName;
+	
+	private String pngOriFileName;
+	private String pdfOriFileName;
+	private String tifOriFileName;
+	private String jpgOriFileName;
+	private String programOriFileName;
+	private String menualOriFileName;
+	
+	private String regDate;
+	private String regId;
+	private String regNm;
+	private int views;
+}

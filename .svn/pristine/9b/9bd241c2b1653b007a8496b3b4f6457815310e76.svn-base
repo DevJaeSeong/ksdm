@@ -1,0 +1,16 @@
+package egovframework.ksdmWeb.admin.forecast.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.common.vo.FileVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("forecastMapper")
+public interface ForecastMapper {
+
+	public void insertFileVo(FileVo fileVo) throws Exception;
+	public void insertForeCastVo(ForecastVo forecastVo) throws Exception;
+	public List<ForecastVo> getForecastList() throws Exception;
+	public int deleteForecast(String taskId) throws Exception;
+}

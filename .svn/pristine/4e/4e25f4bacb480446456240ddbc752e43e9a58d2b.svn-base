@@ -1,0 +1,231 @@
+package egovframework.ksdmWeb.admin.excelUpload.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.admin.excelUpload.service.ExcelUploadService;
+import egovframework.ksdmWeb.common.util.excel.ExcelProcessor;
+import egovframework.ksdmWeb.common.util.excel.ExcelSheetHandler;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("excelUploadService")
+@Slf4j
+public class ExcelUploadServiceImpl implements ExcelUploadService {
+
+	@Resource(name = "excelUploadMapper")
+	private ExcelUploadMapper excelUploadMapper;
+
+	@Resource(name = "excelProcessor")
+	private ExcelProcessor excelProcessor;
+	
+	@Override
+	public Map<String, Object> excelUpload(MultipartFile file) {
+		log.debug("excelUpload() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<ExcelSheetHandler> excelSheetHandlers = null;
+		
+		// 엑셀 읽기.
+		try {
+			
+			excelSheetHandlers = excelProcessor.readSheets(file);
+			
+		} catch (Exception e) {
+			
+			log.error("에러발생");
+			e.printStackTrace();
+			result.put("result", "fail");
+			log.debug("excelUpload() 끝");
+			return result;
+		}
+
+		// 읽은 엑셀 유효성 검사.
+		if (!validateExcel(excelSheetHandlers)) {
+			
+			result.put("result", "wrongExcel");
+			log.debug("유효하지 않은 엑셀이므로 업로드를 중지합니다.");
+			log.debug("excelUpload() 끝");
+			return result;
+		}
+		
+		// 행(row) 단위로 파싱하여 로직 수행.
+		for (ExcelSheetHandler excelSheetHandler : excelSheetHandlers) {
+			
+			for (List<String> row : excelSheetHandler.getRows()) {
+				
+				SubVo subVo = new SubVo();
+				String value = "";
+				
+				// 년도별조사업무
+				value = row.get(0);
+				subVo.setTaskName(value);
+				
+				// 조사업무명
+				value = row.get(1);
+				subVo.setResearchTaskName(value);
+				
+				// 조사일시
+				value = row.get(2);
+				subVo.setSubDate(value);
+				
+				// 조사시작시간
+				value = row.get(3);
+				subVo.setSubStartTime(value);
+				
+				// 조사종료시간
+				value = row.get(4);
+				subVo.setSubEndTime(value);
+				
+				// 조사기관
+				value = row.get(5);
+				subVo.setSubResearchGroup(value);
+				
+				// 조사자
+				value = row.get(6);
+				subVo.setSubResearchMembers(value);
+				
+				// 날씨
+				value = row.get(7);
+				subVo.setSubWeather(value);
+				
+				// 온도
+				value = row.get(8);
+				subVo.setSubTemperature(value);
+				
+				// 조사장소(주소)
+				value = row.get(9);
+				subVo.setSubResearchLocation(value);
+				
+				// GPS(N)
+				value = row.get(10);
+				subVo.setSubGpsN(value);
+				
+				// GPS(E)
+				value = row.get(11);
+				subVo.setSubGpsE(value);
+				
+				// 고도
+				value = row.get(12);
+				subVo.setSubAltitude(value);
+				
+				// 장소유형
+				value = row.get(13);
+				subVo.setSubLocationCategory(value);
+				
+				// 발생여부
+				value = row.get(14);
+				subVo.setSubOccurrenceStatus(value);
+				
+				// 해충명
+				value = row.get(15);
+				subVo.setSubInsectName(value);
+				
+				// 상태
+				value = row.get(16);
+				subVo.setSubInsectStatus(value);
+				
+				// 조사기주번호
+				value = row.get(17);
+				subVo.setSubNum(value);
+				
+				// 기주식물명
+				value = row.get(18);
+				subVo.setSubPlantName(value);
+				
+				// 해충발생정도(부화 난각 수)
+				value = row.get(19);
+				subVo.setSubOccurrenceDegree(value);
+				
+				// 식물 내 발생 위치
+				value = row.get(20);
+				subVo.setSubOccurrenceLocationInPlant(value);
+				
+				// 기타 조사지 내 식물군
+				value = row.get(21);
+				subVo.setSubEtcPlant(value);
+				
+				// 기타 특이사항 및 환경
+				value = row.get(22);
+				subVo.setSubEtcLocation(value);
+				
+				// 도로 가장자리와의 거리
+				value = row.get(23);
+				subVo.setSubDistanceFromRoad(value);
+				
+				// 도로종류
+				value = row.get(24);
+				subVo.setSubRoadCategory(value);
+				
+				try {
+					
+					excelUploadMapper.insertSubVo(subVo);
+					
+				} catch (Exception e) {
+
+					log.error("DB에러");
+					e.printStackTrace();
+					continue;
+				}
+			}
+		}
+		
+		result.put("result", "success");
+		
+		log.debug("excelUpload() 끝");
+		return result;
+	}
+	
+	private boolean validateExcel(List<ExcelSheetHandler> excelSheetHandlers) {
+		log.debug("validateExcel() 시작");
+		
+		boolean result = true;
+		
+		for (ExcelSheetHandler excelSheetHandler : excelSheetHandlers) {
+			
+			List<String> header = excelSheetHandler.getHeader();
+			
+			if(!(
+					header.get(0).equals("년도별조사업무")
+				 || header.get(1).equals("조사업무명")
+				 || header.get(2).equals("조사일시")
+				 || header.get(3).equals("조사시작시간")
+				 || header.get(4).equals("조사종료시간")
+				 || header.get(5).equals("조사업무명")
+				 || header.get(6).equals("조사자")
+				 || header.get(7).equals("날씨")
+				 || header.get(8).equals("온도")
+				 || header.get(9).equals("조사장소(주소)")
+				 || header.get(10).equals("GPS(N)")
+				 || header.get(11).equals("GPS(E)")
+				 || header.get(12).equals("고도(m)")
+				 || header.get(13).equals("장소유형")
+				 || header.get(14).equals("발생여부")
+				 || header.get(15).equals("해충명")
+				 || header.get(16).equals("상태")
+				 || header.get(17).equals("조사기주번호")
+				 || header.get(18).equals("기주식물명")
+				 || header.get(19).equals("해충발생정도(부화 난각 수)")
+				 || header.get(20).equals("식물 내 발생 위치")
+				 || header.get(21).equals("기타 조사지 내 식물군")
+				 || header.get(22).equals("기타 특이사항 및 환경")
+				 || header.get(23).equals("도로 가장자리와의 거리")
+				 || header.get(24).equals("도로종류")
+				)) {
+				
+				result = false;
+				break;
+			}
+		}
+		
+		log.debug("엑셀 유효성 확인 결과: {}", result);
+		log.debug("validateExcel() 끝");
+		return result;
+	}
+}

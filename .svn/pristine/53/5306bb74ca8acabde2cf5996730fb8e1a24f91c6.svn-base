@@ -1,0 +1,12 @@
+package egovframework.ksdmWeb.admin.forecast.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+
+public interface ForecastService {
+
+	public Map<String, Object> uploadFiles(ForecastVo forecastVo);
+	public Map<String, Object> deleteFiles(List<String> taskIds);
+}

@@ -1,0 +1,9 @@
+package egovframework.ksdmWeb.admin.userManagement.service;
+
+import lombok.Data;
+
+@Data
+public class AuthorityVo {
+	private String authorityId;
+	private String authorityName;
+}

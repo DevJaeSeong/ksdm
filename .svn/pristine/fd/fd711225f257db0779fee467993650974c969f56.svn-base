@@ -1,0 +1,10 @@
+package egovframework.ksdmWeb.common.vo;
+
+import lombok.Data;
+
+@Data
+public class TaskVo {
+	
+    private int taskId;
+    private String taskName;
+}

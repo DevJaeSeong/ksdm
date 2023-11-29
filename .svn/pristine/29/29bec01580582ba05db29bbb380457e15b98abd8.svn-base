@@ -1,0 +1,16 @@
+package egovframework.ksdmWeb.admin.researchData.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.admin.researchData.service.ResearchDataVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("researchDataMapper")
+public interface ResearchDataMapper {
+
+	public List<ResearchDataVo> getAllSubjectList() throws Exception;
+	public int getResearchDataTotalCount(PagingVo pagingVo) throws Exception;
+	public List<ResearchDataVo> getResearchData(PagingVo pagingVo) throws Exception;
+	public void insertResearchData(ResearchDataVo researchDataVo) throws Exception;
+}

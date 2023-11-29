@@ -1,0 +1,8 @@
+package egovframework.ksdmWeb.user.main.service;
+
+import java.util.Map;
+
+public interface UserMainService {
+
+	public Map<String, Object> changePassword(Map<String, String> reciveData);
+}

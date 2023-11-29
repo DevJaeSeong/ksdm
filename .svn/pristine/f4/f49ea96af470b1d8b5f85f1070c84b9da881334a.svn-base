@@ -1,0 +1,10 @@
+package egovframework.ksdmWeb.general.insectDistribution.service;
+
+import java.util.Map;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+
+public interface InsectDistributionService {
+
+	public Map<String, Object> getDistributionData(PagingVo pagingVo);
+}

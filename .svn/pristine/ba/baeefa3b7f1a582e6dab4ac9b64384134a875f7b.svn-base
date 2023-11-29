@@ -1,0 +1,29 @@
+package egovframework.ksdmWeb.common.util.fileUpload;
+
+/**
+ * 파일 경로를 저장하고있는 클래스.
+ */
+public class FilePathHolder {
+	
+	public static final String ROOT_PATH = getRoot();
+	public static final String FORECAST_FILE_PATH = ROOT_PATH + "opt/KSDM/attachement/forecast/";		// 예상분포파일
+	public static final String INSECT_IMG_PATH = ROOT_PATH + "opt/KSDM/attachement/insectImg/";			// 곤충이미지
+	public static final String BOARD_FILE_PATH = ROOT_PATH + "opt/KSDM/attachement/board/";				// 게시판첨부파일
+	
+	private static String getRoot() {
+		
+		String os = System.getProperty("os.name").toLowerCase();
+		String rootPath = "";
+		
+        if (os.contains("win")) {
+
+        	rootPath = "C:/";
+        	
+        } else if (os.contains("linux")) {
+
+        	rootPath = "/";
+        }
+        
+        return rootPath;
+	}
+}

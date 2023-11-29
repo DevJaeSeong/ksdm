@@ -1,0 +1,55 @@
+package egovframework.ksdmWeb.common.paging;
+
+import lombok.Data;
+
+@Data
+public class PagingVo {
+
+	/** 검색Keyword */
+	private String searchKeyword;
+	
+	/** 검색할 칼럼 */
+	private String searchColumn;
+	
+	/** ParticipatedResearch의 진행상태 코드 */
+	private String researchStatusCode;
+	
+	/** ParticipatedResearch의 식별번호 */
+	private int participatedResearchId;
+	
+	/** researchTaskId */
+	private int researchTaskId;
+
+	/** 현재페이지 */
+	private int pageIndex;
+
+	/** 페이지갯수 */
+	private int pageUnit = 5;
+
+	/** 페이지사이즈 */
+	private int pageSize = 10;
+	
+	/** firstIndex */
+	private int firstIndex;
+
+	/** lastIndex */
+	private int lastIndex;
+	
+	/** 정렬Keyword */
+	private String sort;
+	
+	/** 이미지파일이름 */
+	private String imgName;
+	
+	/** 게시판 구분 */
+	private String boardDiv;
+	
+	/** 시작날짜 */
+	private String dateStar;
+	
+	/** 종료날짜 */
+	private String dateEnd;
+	
+	/** 유저Id */
+	private String userId;
+}

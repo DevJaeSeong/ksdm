@@ -1,0 +1,86 @@
+@charset "utf-8";
+
+
+/* ----------------------------------------------------------- */
+/* body * {line-height: normal;} */
+header { width: 100%; height: 100px; display: inline-block; text-align: center; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-bottom: 1px solid #5a5a5a; z-index: 10000;}
+.header {width: 100%; height: 100px; background-color: #000;}
+
+header .gnb { width: 1300px;  height: auto;  display: inline-block; position: relative; margin: 0 auto;}
+
+
+/* S: ..menu_box */
+.menu_box {position: relative;}
+.box_bg {display: none;position: absolute;top: 100%;left: 50%;transform: translateX(-50%);transition: 0.3s; width: 100vW;height: 120px; background-color: #000;opacity: 0.9;}
+/* E: .box_bg */
+
+/* S: .main_menu */
+.main_menu{max-width: 1300px; width: 100%; height: auto; margin: auto;}
+/* E: .main_menu */
+
+/* S: .sub_menu */
+.sub_menu {width: 100%;display: inline-block;}
+.sub_menu >.sub_menu_inner {display: inline-block; float: right;}
+/* .sub_menu_inner::after {content: "";clear: both;display: block;} */
+.sub_menu >.sub_menu_inner>li {display: inline-block;line-height: 40px;}
+.sub_menu >.sub_menu_inner>li img {width: 12px; height: 12px;margin-right:5px;}
+.sub_menu >.sub_menu_inner>li>a {color: #ffffff; font-weight: 500; font-size: 14px;}
+.sub_menu >.sub_menu_inner>li::after {content: "";width: 2px; height: 18px;background-color: #ccc;display: inline-block; vertical-align: middle;margin: 0 10px;}
+.sub_menu >.sub_menu_inner>li:last-child::after {display: none;}
+/* E: .sub_menu */
+
+/* S: .gnb */
+.gnb >h1 {width: 220px; height: 68px; float: left;position: absolute; top: -30px;}
+.gnb >.dep1 {display: inline-block;width: 1050px;float: right;font-size: 0;position: relative;}  
+.gnb >.dep1>li {display: inline-block;width: 175px;line-height: 47px;}
+.gnb >.dep1>li>a {color: #ffffff; font-weight: 700; font-size: 18px;display: inline-block;width: 100%; height: 100%;}
+
+.gnb >.dep1>li:hover>a {color: #ffb500;}
+.gnb>.dep1>li:hover .dep2 {display: block;}
+
+.dep2 {display: none; position: absolute; top: 100%;left: 40px;width: 100%;z-index: 999;padding: 30px 0;text-align: left;}
+.dep2>li {display: inline-block; line-height: 50px; }
+.dep2>li>a {color: #ffffff;display: inline-block;font-size: 16px;font-weight: 600; vertical-align: middle;padding: 0 30px;margin: 0 30px 15px 0; border: 1px solid #5a5a5a;}
+.dep2>li>a:hover {border:1px solid #ffb500;}
+.gnb>.dep1:hover >.dep2 {display: block;}
+.gnb:hover >.box_bg {display: block;}
+/* E: .gnb */
+
+
+
+
+/* ---------- footer 시작 ---------- */
+.foot { width: 100%; height: 107px; background-color: #fff; min-width: 1300px; position: relative;}
+.foot>article { width: 1300px; height: 82px; margin: 0 auto; padding-top: 25px; position: relative;}
+
+.foot_logo {display: inline-block; float: left; opacity: 0.5; height: 100%;}
+
+.foot_info { display: inline-block; float: left; margin-left: 50px; margin-top: 10px; color: #666666;}
+
+.foot_info>p {font-family: 'Noto2'; font-size: 14px;}
+
+/* foot_02 추가 */
+.foot_02 { width: 100%; height: 107px; background-color: #e7e7e7; min-width: 1300px; position: relative;}
+.foot_02>article { width: 1300px; height: 82px; margin: 0 auto; padding-top: 25px; position: relative;}
+
+.foot_02_logo {display: inline-block; float: left; opacity: 0.5; height: 100%;}
+
+.foot_02_info { display: inline-block; float: left; margin-left: 50px; margin-top: 10px; color: #4d4d4d;}
+
+.foot_02_info>p {font-family: 'Noto2'; font-size: 14px;}
+
+.site_map { display: inline-block; float: right; height: 100%;}
+
+.site_map>button { margin-top: 10px; padding: 8px 35px 8px 8px; background-color: #828282; color: #eaeaea; font-family: 'Noto4'; font-size: 14px; position: relative; cursor: pointer;}
+
+.site_map>button::after { content: ''; background-image: url(../images/footer_plus_bt.png); background-position: center; background-repeat: no-repeat; background-size: 100%; position: absolute; top: 50%; right: 5px; transform: translateY(-50%); width: 15px; height: 15px;}
+
+/* ---------- footer 끝 ---------- */
+
+/*select box*/
+select.sel { height:32px; padding:4px 5px 4px 5px; vertical-align:middle; border:1px solid #ccc; border-radius:0px }
+.family_stie_box{position:absolute;right:0px;top: 38px;display:inline-block;}
+.family_btn { background: #fff; border: 1px solid #ccc; color: #222; min-width: 60px; font-size: 14px; font-weight: 500; padding: 0px 20px 0px; line-height: 30px; cursor: pointer;}
+.family_btn:hover{background:#f2f5f8; transition: all 0.2s ease-in; color: #222; }
+a.family_btn { display: inline-block; font-size:14px; text-align:center; position:relative; top:1px; background: #fff;  border: 1px solid #ccc; color: #222; font-size: 14px; font-weight: 500;   cursor: pointer; text-decoration:none !important; }
+a.family_btn:hover{background:#f2f5f8; transition: all 0.2s ease-in; color:#222; }

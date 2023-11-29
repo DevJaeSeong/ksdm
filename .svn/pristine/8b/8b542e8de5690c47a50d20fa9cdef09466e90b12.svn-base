@@ -1,0 +1,41 @@
+package egovframework.ksdmWeb.general.informationForum.common.web;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.vo.BoardVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class BoardController {
+
+	@Resource(name = "commonDataService")
+	private CommonDataService commonDataService;
+	
+	@GetMapping("/boardListPage.do")
+	public String boardListPage(@RequestParam("boardDiv") String boardDiv, Model model) {
+		log.debug("/boardListPage.do");
+		
+		model.addAttribute("boardDiv", boardDiv);
+		
+		return "/general/informationForum/boardListPage";
+	}
+	
+	@GetMapping("/boardDetailPage.do")
+	public String boardDetailPage(@RequestParam("boardNum") String boardNum, Model model) {
+		log.debug("/boardDetailPage.do");
+		
+		BoardVo boardVo = commonDataService.getBoardByBoardNum(boardNum);
+		
+		model.addAttribute("boardVo", boardVo);
+		model.addAttribute("boardNum", boardNum);
+		
+		return "/general/informationForum/boardDetailPage";
+	}
+}

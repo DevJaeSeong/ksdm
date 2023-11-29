@@ -1,0 +1,146 @@
+package egovframework.ksdmWeb.admin.adminInsectInfo.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.admin.adminInsectInfo.service.AdminInsectInfoService;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.vo.InsectVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/admin/insectInfo/*")
+@Slf4j
+public class AdminInsectInfoController {
+	
+	@Resource(name = "adminInsectInfoService")
+	private AdminInsectInfoService adminInsectInfoService;
+	
+	@Resource(name = "commonDataService")
+	private CommonDataService commonDataService;
+
+	@GetMapping("/adminInsectListPage.do")
+	public String adminInsectListPage() {
+		log.debug("/adminInsectListPage.do");
+		
+		return "admin/adminInsectInfo/adminInsectListPage";
+	}
+	
+	@GetMapping("/getInsectList.do")
+	@ResponseBody
+	public Map<String, Object> getInsectList(@ModelAttribute PagingVo pagingVo) throws Exception {
+		log.debug("/getInsectList.do");
+		
+		Map<String, Object> data = commonDataService.getInsectList(pagingVo);
+		
+		return data;
+	}
+	
+	@GetMapping("/adminInsectDetailPage.do")
+	public String adminInsectDetailPage(@RequestParam("insectNum") String insectNum, Model model) throws Exception {
+		log.debug("/adminInsectDetailPage.do");
+		log.debug("<== insectNum: {}", insectNum);
+		
+		model.addAttribute("insectNum", insectNum);
+		
+		return "admin/adminInsectInfo/adminInsectDetailPage";
+	}
+	
+	@GetMapping("/adminInsectRegistPage.do")
+	public String adminInsectRegistPage() throws Exception {
+		log.debug("/adminInsectRegistPage.do");
+		
+		return "admin/adminInsectInfo/adminInsectRegistPage";
+	}
+	
+	@PostMapping(value = "/insectRegistConfirm.do", consumes = "multipart/form-data")
+	@ResponseBody
+	public Object insectRegistConfirm(
+									  @RequestParam("insectStatusList") List<String> insectStatusList,
+						              @RequestParam("korSpecificName") String korSpecificName,
+						              @RequestParam("engSpecificName") String engSpecificName,
+						              @RequestParam("taxon") String taxon,
+						              @RequestParam("description") String description,
+						              @RequestParam(value = "file", required = false) MultipartFile file
+						             ) {
+		log.debug("<== insectStatusList: {}, korSpecificName: {}, engSpecificName: {}, taxon: {}, description: {}",
+				insectStatusList, korSpecificName, engSpecificName, taxon, description);
+		
+		InsectVo insectVo = new InsectVo();
+		insectVo.setKorSpecificName(korSpecificName);
+		insectVo.setEngSpecificName(engSpecificName);
+		insectVo.setTaxon(taxon);
+		insectVo.setDescription(description);
+		insectVo.setFile(file);
+		
+		Map<String, Object> result = adminInsectInfoService.insectRegistConfirm(insectVo, insectStatusList);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@GetMapping("/adminInsectModifylPage.do")
+	public String adminInsectModifylPage(@RequestParam("insectNum") String insectNum, ModelMap model) throws Exception {
+		log.debug("/adminInsectModifylPage.do");
+		
+		model.addAttribute("insectNum", insectNum);
+		
+		return "admin/adminInsectInfo/adminInsectModifyPage";
+	}
+	
+	@PostMapping(value = "/insectModifyConfirm.do", consumes = "multipart/form-data")
+	@ResponseBody
+	public Object insectModifyConfirm(
+									  @RequestParam("insectStatusList") List<String> insectStatusList,
+						              @RequestParam("korSpecificName") String korSpecificName,
+						              @RequestParam("engSpecificName") String engSpecificName,
+						              @RequestParam("taxon") String taxon,
+						              @RequestParam("oldSavedFileName") String oldSavedFileName,
+						              @RequestParam("insectNum") String insectNum,
+						              @RequestParam("description") String description,
+						              @RequestParam(value = "file", required = false) MultipartFile file
+						             ) {
+		log.debug("<== insectStatusList: {}, korSpecificName: {}, engSpecificName: {}, taxon: {}, description: {}",
+				insectStatusList, korSpecificName, engSpecificName, taxon, description);
+		
+		InsectVo insectVo = new InsectVo();
+		insectVo.setKorSpecificName(korSpecificName);
+		insectVo.setEngSpecificName(engSpecificName);
+		insectVo.setTaxon(taxon);
+		insectVo.setOldSavedFileName(oldSavedFileName);
+		insectVo.setInsectNum(insectNum);
+		insectVo.setDescription(description);
+		insectVo.setFile(file);
+		
+		Map<String, Object> result = adminInsectInfoService.insectModifyConfirm(insectVo, insectStatusList);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@PostMapping("/deleteInsectInfo.do")
+	@ResponseBody
+	public Object deleteInsectInfo(@RequestBody Map<String, String> reciveData) throws Exception {
+		log.debug("<== insectNum: {}", reciveData);
+		
+		Map<String, Object> result = adminInsectInfoService.deleteInsectByInsectNum(reciveData.get("insectNum"));
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+}

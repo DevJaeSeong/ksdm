@@ -1,0 +1,47 @@
+@charset "utf-8";
+
+body {margin: 0 auto;}
+.wrap {overflow-x: hidden; max-width: 768px; margin: auto; min-width: 320px;}
+
+/* ----- 헤더영역 시작----- */
+.hd {width: 100%; min-height: 50px; line-height: 48px; text-align: center; border-bottom: 1px solid #ccc; z-index: 100; padding: 0 10px;}
+h1 {display: inline-block; color: white; font-size: 22px; font-weight: 600; vertical-align: middle; background: linear-gradient(to right, #789cf5, #01174e); -webkit-background-clip: text; -webkit-text-fill-color: transparent;}
+
+.home_btn {background: url(../images/button2.png) center; display: inline-block; width: 50px; height: 50px; background-size: 60% 60%; background-repeat: no-repeat; float: left; border-right: 1px solid #ddd;  border-left: 1px solid #ddd;}
+.info_btn {background: url(../images/button1.png)center;display: inline-block; width: 50px; height: 50px; background-size: 60% 60%; background-repeat: no-repeat; float: left; border-right: 1px solid #ddd;}
+.home_btn:hover, .info_btn:hover {background-color: #f1f1f1;}
+
+.log_out {float: right; border: 1px solid #ddd; padding: 5px 10px; border-radius: 5px;}
+.log_out:hover {background-color: #f1f1f1;}
+/* ----- 헤더영역 끝 ----- */
+
+
+
+/* 공통사용 클래스 */
+.clear_fix::after {content: ''; display: block; clear: both;}
+.f_01 {color: #505050;}
+.f_02 {color: #303030;}
+.f_03 {color: #fff;}
+.f_04 {color: #f15c30;}
+
+.st01 {font-weight: 500;}
+.st02 {color: #3662d5; font-weight: 500;}
+.st03 * {font-size: 12px;}
+
+.b_r01 {display: inline-block; min-width: 60px; padding: 5px 10px; color: #fff; font-size: 13px;}
+.b_r02 {display: inline-block; min-width: 60px; padding: 5px 10px; color:}
+
+.bg01 {background-color: #00235B;}
+.bg02 {background-color: #285430;} 
+.bg03 {background-color: #FC7300;} 
+.bg04 {background-color: #E21818;} 
+.bg05 {background-color: #362FD9;} 
+
+.bd01 {border:1px solid #00235B; color: #00235B;}
+.bd02 {border:1px solid #285430; color: #285430;} 
+.bd03 {border:1px solid #FC7300; color: #FC7300;} 
+.bd04 {border:1px solid #E21818; color: #E21818;} 
+.bd05 {border:1px solid #362FD9; color: #362FD9;}
+
+.bd04_1 {background-color: #f95555; border:1px solid #f95555;color:#fff;} 
+.bd04_1:hover {background-color: #fff; color: #f95555; border:1px solid #f95555;} 

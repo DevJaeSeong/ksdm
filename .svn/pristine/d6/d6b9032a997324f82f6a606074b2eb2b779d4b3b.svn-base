@@ -1,0 +1,556 @@
+package egovframework.ksdmWeb.admin.taskAndResearch.service.impl;
+
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
+
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchService;
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchVo;
+import egovframework.ksdmWeb.common.paging.PagingMaker;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.service.impl.CommonDataMapper;
+import egovframework.ksdmWeb.common.util.excel.ExcelProcessor;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("taskAndResearcService")
+@Slf4j
+public class TaskAndResearchServiceImpl implements TaskAndResearchService {
+	
+	@Resource(name = "pagingMaker")
+	private PagingMaker pagingMaker;
+	
+	@Resource(name = "taskAndResearchMapper")
+	private TaskAndResearchMapper taskAndResearchMapper;
+	
+	@Resource(name = "commonDataService")
+	private CommonDataService commonDataService;
+	
+	@Resource(name = "commonDataMapper")
+	private CommonDataMapper commonDataMapper;
+	
+	@Resource(name = "excelProcessor")
+	private ExcelProcessor excelProcessor;
+	
+	@Override
+	public ModelMap getTaskList(ModelMap model) throws Exception {
+		
+		List<TaskAndResearchVo> taskAndResearchVos = commonDataMapper.selectTaskList();
+		
+		model.addAttribute("taskAndResearchVos", taskAndResearchVos);
+		model.addAttribute("taskAndResearchVosSize", taskAndResearchVos.size());
+		
+		return model;
+	}
+
+	@Override
+	public void researchTaskRegistConfirm(List<TaskAndResearchVo> taskAndResearchVos) {
+		
+		for (int i = 0; i < taskAndResearchVos.size(); i ++) {
+			
+			TaskAndResearchVo taskAndResearchVo = taskAndResearchVos.get(i);
+			
+			taskAndResearchMapper.insertResearchTask(taskAndResearchVo);
+			
+		}
+		
+	}
+
+	@Override
+	public Map<String, Object> getParticipatedResearchList(PagingVo pagingVo) throws Exception {
+		
+		Map<String, Object> map = pagingMaker.pagingMake(pagingVo, taskAndResearchMapper.selectParticipatedResearchTotalCount(pagingVo));
+		
+		pagingVo = (PagingVo) map.get("pagingVo");
+		
+		List<TaskAndResearchVo> taskAndResearchVos = taskAndResearchMapper.selectParticipatedResearchList(pagingVo);
+		
+		map.put("taskAndResearchVos", taskAndResearchVos);
+		map.remove("pagingVo");
+		
+		return map;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void getSubject(PagingVo pagingVo, ModelMap model) {
+		
+		Map<String, Object> data = commonDataService.getSubWaitList(pagingVo);
+		
+		model.addAttribute("subVos", (List<SubVo>) data.get("subVos"));
+	}
+
+	@Override
+	public Map<String, Object> getResearchTaskList(PagingVo pagingVo, ModelMap model) throws Exception {
+		
+		Map<String, Object> map = pagingMaker.pagingMake(pagingVo, taskAndResearchMapper.selectResearchTaskTotalCount(pagingVo));
+		
+		pagingVo = (PagingVo) map.get("pagingVo");
+		
+		List<TaskAndResearchVo> taskAndResearchVos = taskAndResearchMapper.selectResearchTaskList(pagingVo);
+		
+		map.put("taskAndResearchVos", taskAndResearchVos);
+		map.remove("pagingVo");
+		
+		return map;
+	}
+
+	@Override
+	public void getResearchTask(TaskAndResearchVo taskAndResearchVo, ModelMap model) throws Exception {
+		
+		taskAndResearchVo = taskAndResearchMapper.selectResearchTask(taskAndResearchVo);
+		List<TaskAndResearchVo> taskAndResearchVos = commonDataMapper.selectTaskList();
+		
+		model.addAttribute("taskAndResearchVo", taskAndResearchVo);
+		model.addAttribute("taskAndResearchVos", taskAndResearchVos);
+		
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void getSubListDataToExcel(PagingVo pagingVo, HttpServletResponse response) {
+		log.debug("getSubListDataToExcel() 시작");
+		
+		pagingVo.setPageIndex(0);
+		Map<String, Object> map = commonDataService.getSubVoList(pagingVo);
+		
+		List<SubVo> subVos = (List<SubVo>) map.get("subVos");
+		
+		if (subVos == null) {
+			
+			log.debug("getSubListDataToExcel() 끝");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
+		
+		try {
+			
+			exportSubListToExcel(response, subVos);
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return;
+		}
+		
+		log.debug("getSubListDataToExcel() 끝");
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+	
+	/**
+	 * DB에서 조회한 기주테이블 데이터를 엑셀로 만들어 클라이언트에게 전송.
+	 */
+	private void exportSubListToExcel(HttpServletResponse response, List<SubVo> subVos) throws Exception {
+		log.debug("exportExcel() 시작");
+		
+		try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
+			
+			Sheet sheet = workbook.createSheet();
+			
+			// 헤더 스타일 설정
+			CellStyle headerStyle = workbook.createCellStyle();
+	        headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex()); // 회색 배경색
+	        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+	        headerStyle.setBorderTop(BorderStyle.THIN);
+	        headerStyle.setBorderBottom(BorderStyle.THIN);
+	        headerStyle.setBorderLeft(BorderStyle.THIN);
+	        headerStyle.setBorderRight(BorderStyle.THIN);
+			
+			Row headerRow = sheet.createRow(0);
+			Cell headerCell;
+			
+			headerCell = headerRow.createCell(0);
+			headerCell.setCellValue("년도별조사업무");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(1);
+			headerCell.setCellValue("조사업무명");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(2);
+			headerCell.setCellValue("조사일시");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(3);
+			headerCell.setCellValue("조사시작시간");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(4);
+			headerCell.setCellValue("조사종료시간");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(5);
+			headerCell.setCellValue("조사기관");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(6);
+			headerCell.setCellValue("조사자");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(7);
+			headerCell.setCellValue("날씨");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(8);
+			headerCell.setCellValue("온도(℃)");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(9);
+			headerCell.setCellValue("조사장소(주소)");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(10);
+			headerCell.setCellValue("GPS(N)");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(11);
+			headerCell.setCellValue("GPS(E)");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(12);
+			headerCell.setCellValue("고도(m)");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(13);
+			headerCell.setCellValue("장소유형");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(14);
+			headerCell.setCellValue("발생여부");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(15);
+			headerCell.setCellValue("해충명");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(16);
+			headerCell.setCellValue("상태");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(17);
+			headerCell.setCellValue("조사기주번호");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(18);
+			headerCell.setCellValue("기주식물명");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(19);
+			headerCell.setCellValue("해충발생정도(부화 난각 수)");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(20);
+			headerCell.setCellValue("식물 내 발생 위치");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(21);
+			headerCell.setCellValue("기타 조사지 내 식물군");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(22);
+			headerCell.setCellValue("기타 특이사항 및 환경");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(23);
+			headerCell.setCellValue("도로 가장자리와의 거리");
+			headerCell.setCellStyle(headerStyle);
+			
+			headerCell = headerRow.createCell(24);
+			headerCell.setCellValue("도로종류");
+			headerCell.setCellStyle(headerStyle);
+			
+			// 데이터 셀 스타일 설정
+	        CellStyle dataCellStyle = workbook.createCellStyle();
+	        dataCellStyle.setBorderTop(BorderStyle.THIN);
+	        dataCellStyle.setBorderBottom(BorderStyle.THIN);
+	        dataCellStyle.setBorderLeft(BorderStyle.THIN);
+	        dataCellStyle.setBorderRight(BorderStyle.THIN);
+			
+			for (int i = 0; i < subVos.size(); i++) {
+				
+				SubVo subVo = subVos.get(i);
+				Row row = sheet.createRow(i + 1);
+				
+				String value = "";
+				Cell cell;
+				
+				// 년도별조사업무
+				value = subVo.getTaskName();
+				cell = row.createCell(0);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사업무명
+				value = subVo.getResearchTaskName();
+				cell = row.createCell(1);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사일시
+				value = subVo.getSubDate();
+				cell = row.createCell(2);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사시작시간
+				value = subVo.getSubStartTime();
+				cell = row.createCell(3);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사종료시간
+				value = subVo.getSubEndTime();
+				cell = row.createCell(4);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사기관
+				value = subVo.getSubResearchGroup();
+				cell = row.createCell(5);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사자
+				value = subVo.getSubResearchMembers();
+				cell = row.createCell(6);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 날씨
+				value = subVo.getSubWeather();
+				cell = row.createCell(7);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 온도
+				value = subVo.getSubTemperature();
+				cell = row.createCell(8);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사장소(주소)
+				value = subVo.getSubResearchLocation();
+				cell = row.createCell(9);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// GPS(N)
+				value = subVo.getSubGpsN();
+				cell = row.createCell(10);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// GPS(E)
+				value = subVo.getSubGpsE();
+				cell = row.createCell(11);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 고도
+				value = subVo.getSubAltitude();
+				cell = row.createCell(12);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 장소유형
+				value = subVo.getSubLocationCategory();
+				cell = row.createCell(13);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 발생여부
+				value = subVo.getSubOccurrenceStatus();
+				cell = row.createCell(14);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 해충명
+				value = subVo.getSubInsectName();
+				cell = row.createCell(15);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 상태
+				value = subVo.getSubInsectStatus();
+				cell = row.createCell(16);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 조사기주번호
+				value = subVo.getSubNum();
+				cell = row.createCell(17);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 기주식물명
+				value = subVo.getSubPlantName();
+				cell = row.createCell(18);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 해충발생정도(부화 난각 수)
+				value = subVo.getSubOccurrenceDegree();
+				cell = row.createCell(19);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 식물 내 발생 위치
+				value = subVo.getSubOccurrenceLocationInPlant();
+				cell = row.createCell(20);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 기타 조사지 내 식물군
+				value = subVo.getSubEtcPlant();
+				cell = row.createCell(21);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 기타 특이사항 및 환경
+				value = subVo.getSubEtcLocation();
+				cell = row.createCell(22);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 도로 가장자리와의 거리
+				value = subVo.getSubDistanceFromRoad();
+				cell = row.createCell(23);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+				
+				// 도로종류
+				value = subVo.getSubRoadCategory();
+				cell = row.createCell(24);
+				cell.setCellValue(value);
+				cell.setCellStyle(dataCellStyle);
+			}  
+			
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	        response.setHeader("Content-disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode("외래산림해충_조사자료.xlsx", "UTF-8"));
+	        
+	        try (OutputStream outputStream = response.getOutputStream()) {
+	        	
+	            workbook.write(outputStream);
+	            log.debug("엑셀 전송 완료.");
+	        }
+	        
+	        workbook.dispose(); // SXSSFWorkbook에서 사용한 임시 리소스 정리
+			
+		} catch (Exception e) {
+
+			log.debug("엑셀 생성중 에러발생");
+			log.debug("exportExcel() 끝");
+			throw e;
+		}
+		
+		log.debug("exportExcel() 끝");
+	}
+
+	@Override
+	public Map<String, Object> updateResearchStatus(TaskAndResearchVo taskAndResearchVo) {
+		log.debug("updateResearchStatus() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			List<SubVo> subVos = null;
+			String researchStatusCode = taskAndResearchVo.getResearchStatusCode();
+			
+			if (researchStatusCode.equals("2001")) {
+				
+				PagingVo pagingVo = new PagingVo();
+				pagingVo.setResearchStatusCode(researchStatusCode);
+				
+				subVos = commonDataMapper.getSubWaitList(pagingVo);
+			}
+			
+			if (subVos != null) {
+				
+				for (SubVo subVo : subVos) {
+					
+					taskAndResearchMapper.insertSubVo(subVo);
+				}
+			}
+			
+			taskAndResearchMapper.updateResearchStatus(taskAndResearchVo);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		log.debug("updateResearchStatus() 끝");
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> researchTaskDeleteConfirm(String researchTaskId) {
+		log.debug("researchTaskDeleteConfirm() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			taskAndResearchMapper.disableResearchTask(researchTaskId);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		log.debug("researchTaskDeleteConfirm() 끝");
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> deleteSubVo(List<Integer> ids) {
+		log.debug("deleteSubVo() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		int successCnt = 0;
+		
+		for (int subId : ids) {
+			
+			try {
+				
+				successCnt += taskAndResearchMapper.deleteSubVo(subId);
+				
+			} catch (Exception e) {
+				
+				log.error("DB에러");
+				e.printStackTrace();
+			}
+		}
+		
+		if (successCnt > 0) result.put("result", "success");
+		else 				result.put("result", "fail");
+		
+		log.debug("deleteSubVo() 끝");
+		return result;
+	}
+}

@@ -1,0 +1,114 @@
+@charset "utf-8";
+@font-face {
+    font-family: 'Noto1';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-Thin.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-Thin.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Noto2';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-DemiLight.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-DemiLight.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Noto3';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-Light.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Noto4';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-Regular.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Noto5';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-Medium.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-Medium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Noto6';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-Bold.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Noto7';
+    src: url('../font/NotoSansKR-WEB/NotoSansKR-Black.woff2') format('woff2'),
+         url('../font/NotoSansKR-WEB/NotoSansKR-Black.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream1-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream1-webfont.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream2-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream2-webfont.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream3-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream3-webfont.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream4-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream4-webfont.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream5-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream5-webfont.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream6-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream6-webfont.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream7-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream7-webfont.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream8-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream8-webfont.woff') format('woff');
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SC';
+    src: url('../font/S-Core-Dream-light/scdream9-webfont.woff2') format('woff2'),
+         url('../font/S-Core-Dream-light/scdream9-webfont.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+}

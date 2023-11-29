@@ -1,0 +1,28 @@
+package egovframework.ksdmWeb.common.util.fileUpload;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 파일관련 요청을 받는 컨트롤러.
+ */
+@Controller
+@Slf4j
+public class FileRequestReciver {
+
+	@Resource(name = "fileManager")
+	private FileManager fileManager;
+	
+	@GetMapping("/fileDownload.do")
+	public void fileDownload(@RequestParam("fileName") String fileName, HttpServletResponse response) {
+		log.debug("<== fileName: {}", fileName);
+		
+		fileManager.fileDownload(fileName, response);
+	}
+}

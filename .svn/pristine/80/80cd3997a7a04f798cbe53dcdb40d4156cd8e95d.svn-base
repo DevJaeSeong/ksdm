@@ -1,0 +1,62 @@
+@charset "utf-8";
+/*
+@import url(../font/NotoSansKR-WEB/NoTOsans.css);@import url(../font/S-Core-Dream-light/s-core-dream.css);
+*/
+/* ===========================================================*/
+body {background-color:  #e6ebf2;}
+main { display: inline-block; float: left; width: 1640px; height: auto;/*845px*/ background-color: #fff; margin-left: 277px; margin-top: 72px; padding-bottom: 20px; overflow: hidden; } 
+.main_hd { width: calc(100% - 10px); height: 60px; display: inline-block; text-align: left; line-height: 3em; padding-left: 10px; font-family: 'SC'; font-weight: 600; font-size: 20px; background-color: #ffffff; } 
+.main_menu { display: inline-block; float: left; width: calc(100% - 28px); height: 340px; padding: 20px 14px 0 14px; } 
+.mainfl_l { display: inline-block; float: left; width: 779px; padding: 10px; background-color: #ffffff; } 
+.main_notice { display: inline-block; float: left; width: 779px; height: 300px; padding: 10px; background-color: #ffffff; } 
+.main_fl_r { display: inline-block; float: right; width: 779px; padding: 10px; background-color: #ffffff; } 
+.main_message { display: inline-block; float: right; width: 779px; height: 300px; padding: 10px; background-color: #ffffff; } 
+.main_menu2 { display: inline-block; float: left; width: calc(100% - 28px); margin-left: 14px; } 
+.main_project { display: inline-block; width: calc(100% -20px); height: 100%; background-color: #ffffff; padding: 0 10px; float: left; } 
+/* 230329 추가_ksy */
+.main_project_02 { display: inline-block; /*width: 972px; height: auto; background-color: #fff;*/ padding: 0 10px; float: left;} 
+.title { display: inline-block; width: 100%; } 
+.title p { display: block; padding: 10px 0; } 
+.title p:first-child { border-bottom: 1px solid #cccccc; font-family: 'SC'; font-weight: 500; font-size: 18px; /* border: 1px solid red; */
+ display: flex; justify-content: space-between; align-items: center; } 
+.title p:first-child>a { display: inline-block; float: right; width: 20px; height: 20px; opacity: 0.5; transition: 0.3s; } 
+.title p:first-child>a:hover { opacity: 1; } 
+.title p:first-child>a>img { width: 100%; } 
+.title p:last-child { font-family: 'SC'; font-size: 14px; padding: 10px 0; line-height: 1.5em; } 
+.title p:last-child>span { color: #ff3400; font-weight: bold; } 
+/*
+.main_menu2 .board_date01>tbody>tr>td:nth-of-type(2) a { display: inline-block; width: 80px !important; height: 25px; line-height: 1.6em; color: white; font-family: 'Noto4'; }
+*/
+/* S: 230328 K-SDM 007추가_ksy */
+.sub_menu { border: 1px solid rgb(76, 102, 196); margin-right: 23px;} 
+.sub_menu>a { display: inline-block; font-family: 'SC'; font-size: 16px; color: #eaeaea; padding: 15px; } 
+.rocate { display: inline-block; width: 60%; padding: 20px 0; margin-left: 23px; } 
+.rocate img { width: 16px; /*vertical-align: middle; */}
+.rocate ul li { display: inline-block; margin-right: 5px; font-family: 'SC'; font-weight: 400; font-size: 15px; color: #a6a6a6; } 
+.rocate ul li::after { content: ""; background: url(../images/i_arrow_r.png) no-repeat; display: inline-block; width: 8px; height: 11px; background-size: 100% 100%; position: relative; right: -5px; } 
+.rocate ul li.ro_last::after { content: ""; border: 1px solid red; display: none; } 
+.ro_last span { color: #131313; font-weight: 500; } 
+
+.search { display: block; margin-left: 25px; width: 1592px; height: 50px; background-color: #e6ebf2; } 
+.search_txt>span { position: relative; top: 25px; } 
+.search_txt>span { font-family: 'SC'; font-weight: 500; font-size: 18px; color: #333; margin-left: 10px; } 
+.search_box { float: right; width: 250px; height: 100%; margin-left: 150px; position: relative; } 
+.search_box input { position: absolute; top: 8px; left: 0; width: 200px; height: 30px; padding-left: 5px; border: 1px solid #e0e0e0; } 
+.search_click img {cursor: pointer; width: 32px; height: 32px; position: relative; top: 8px; left: 206px; } 
+.search_box_02 {float: right;margin-right: 25px;position: relative;top: 5px;width: 290px; }
+.search_box_02 input {position: absolute; top: 8px; right: 55px; width: 200px; height: 31px; padding-left: 5px; border: 1px solid #e0e0e0; } 
+.search_click_02{cursor: pointer;cursor: pointer;background-color: #2d4497;color: #fff;padding: 8px 15px;position: absolute;top: 8px;right: 0px;box-shadow: none;}
+
+.txt_l { text-align: left; } 
+.t_img_box { text-align: center; vertical-align: middle; } 
+table tr>.t_img_box>img { width: 60%; } 
+.page_A { display: inline-block; font-family: 'SC'; font-weight: 400; font-size: 15px; color: #333; position: relative; top: 15px; } 
+.page_A>span { margin-right: 5px; vertical-align: middle; } 
+.page_A>span::before { content: ""; background: url(../images/i_list.png)center; width: 15px; height: 13px; background-size: 100% 100%; display: inline-block; margin-right: 5px; } 
+.select_01 {font-size: 15px;color: #5a5a5a;width: 150px; border: 1px solid #e0e0e0; appearance: none; background: #fff url(../images/i_down.png) no-repeat 93% 45%; padding: 7px 24px 7px 10px; } 
+/* E: 230328 K-SDM 007추가_ksy */
+/* S: 230329 K-SDM 008추가_ksy */
+.t_ex { background: #f2f5f8; font-family: 'Noto5'; color: #26334f; text-align: center; } 
+.t_ex_inner p { line-height: 18px; padding: 5px 0; } 
+.t_ex_inner p span { font-weight: 600; } 
+/* E: 230329 K-SDM 008추가_ksy */

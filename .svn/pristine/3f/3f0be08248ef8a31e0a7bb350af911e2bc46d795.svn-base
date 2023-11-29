@@ -1,0 +1,38 @@
+package egovframework.ksdmWeb.common.vo;
+
+import lombok.Data;
+
+/**
+ * SUB_TB 테이블에 맵핑되어있는 Vo 입니다.
+ */
+@Data
+public class SubVo {
+
+	private String subId;							// 조사데이터 식별번호
+	private String taskName;						// 년도별조사업무
+	private String researchTaskName;				// 조사업무명
+	private String subDate;							// 조사일시
+	private String subStartTime;					// 조사시작시간
+	private String subEndTime;						// 조사종료시간
+	private String subResearchGroup;				// 조사기관
+	private String subResearchMembers;				// 조사자
+	private String subWeather;						// 날씨
+	private String subTemperature;					// 온도
+	private String subResearchLocation;				// 조사장소(주소)
+	private String subGpsN;							// GPS(N)
+	private String subGpsE;							// GPS(E)
+	private String subAltitude;						// 고도
+	private String subLocationCategory;				// 장소유형
+	private String subOccurrenceStatus;				// 발생여부
+	private String subInsectName;					// 해충명
+	private String subInsectStatus;					// 상태
+	private String subNum;							// 조사기주번호
+	private String subPlantName;					// 기주식물명
+	private String subOccurrenceDegree;				// 해충발생정도(부화 난각 수)
+	private String subOccurrenceLocationInPlant;	// 식물 내 발생 위치
+	private String subEtcPlant;						// 기타 조사지 내 식물군
+	private String subEtcLocation;					// 기타 특이사항 및 환경
+	private String subDistanceFromRoad;				// 도로 가장자리와의 거리
+	private String subRoadCategory;					// 도로종류
+	private int participatedResearchId;				// 참여한 조사업무 식별번호
+}

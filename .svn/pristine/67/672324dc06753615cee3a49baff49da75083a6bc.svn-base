@@ -1,0 +1,12 @@
+package egovframework.ksdmWeb.common.util.fileUpload;
+
+import egovframework.ksdmWeb.common.vo.FileVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("fileMapper")
+public interface FileMapper {
+
+	public String getFilePath(String savedFileName) throws Exception;
+	public int deleteFileVoBySavedFileName(String savedFileName) throws Exception;
+	public int insertFileVo(FileVo fileVo) throws Exception;
+}

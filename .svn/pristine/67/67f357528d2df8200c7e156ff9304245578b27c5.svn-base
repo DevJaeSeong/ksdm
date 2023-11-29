@@ -1,0 +1,31 @@
+package egovframework.ksdmWeb.common.vo;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class InsectVo {
+
+	private String insectNum;
+	private String korSpecificName;
+	private String engSpecificName;
+	private String taxon;
+	private String oldSavedFileName;
+	private String oriFileName;
+	private String savedFileName;
+	private String filePath;
+	private String firstDiscoveryDate;
+	private String firstDiscoveryPlace;
+	private String inflowPath;
+	private String description;
+	private String regId;
+	private String regDate;
+	private int views;
+	private String modDate;
+	private String modId;
+	private List<InsectStatusVo> insectStatusVos;
+	private MultipartFile file;
+}

@@ -1,0 +1,268 @@
+package egovframework.ksdmWeb.user.research.service.impl;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
+
+import egovframework.ksdmWeb.common.paging.PagingMaker;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.impl.CommonDataMapper;
+import egovframework.ksdmWeb.common.util.fileUpload.FileManager;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.ksdmWeb.security.UserDetailVo;
+import egovframework.ksdmWeb.user.research.service.ResearchService;
+import egovframework.ksdmWeb.user.research.service.ResearchVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("researchService")
+@Slf4j
+public class ResearchServiceImpl implements ResearchService{
+	
+	@Resource(name = "pagingMaker")
+	private PagingMaker pagingMaker;
+	
+	@Resource(name = "researchMapper")
+	private ResearchMapper researchMapper;
+	
+	@Resource(name = "commonDataMapper")
+	private CommonDataMapper commonDataMapper;
+	
+	@Resource(name = "fileManager")
+	private FileManager fileManager;
+
+	@Override
+	public Map<String, Object> getResearchList(PagingVo pagingVo) throws Exception {
+		
+		Map<String, Object> map = pagingMaker.pagingMake(pagingVo, researchMapper.selectResearchTotalCount(pagingVo));
+		
+		pagingVo = (PagingVo) map.get("pagingVo");
+		
+		List<ResearchVo> researchVos = researchMapper.selectResearchList(pagingVo);
+		
+		map.put("researchVos", researchVos);
+		map.remove("pagingVo");
+		
+		return map;
+	}
+
+	@Override
+	public void researchRegist(ResearchVo researchVo) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		UserDetailVo userDetailVo = (UserDetailVo) authentication.getDetails();
+		
+		researchVo.setUserId(userDetailVo.getUserId());
+		
+		Date currentDate = new Date();
+		
+		Timestamp currentTimestamp = new Timestamp(currentDate.getTime());
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String timestampString = sdf.format(currentTimestamp);
+		
+		researchVo.setResearchSubmissionDate(timestampString);
+		
+		researchMapper.insertResearch(researchVo);
+	}
+	
+	@Override
+	public Map<String, Object> getParticipatedResearchList(PagingVo pagingVo) {
+		
+		Map<String, Object> map = null;
+		
+		try {
+			
+			pagingVo.setUserId(SecurityContextHolder.getContext().getAuthentication().getName());
+			
+			map = pagingMaker.pagingMake(pagingVo, researchMapper.selectParticipatedResearchTotalCount(pagingVo));
+			List<ResearchVo> researchVos = researchMapper.selectParticipatedResearchList((PagingVo) map.get("pagingVo"));
+			
+			map.put("researchVos", researchVos);
+			map.remove("pagingVo");
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		return map;
+	}
+	
+	@Override
+	public Map<String, Object> getSubjectList(PagingVo pagingVo) throws Exception {
+		
+		Map<String, Object> data = null;
+		
+		try {
+			
+			data = pagingMaker.pagingMake(pagingVo, researchMapper.selectSubjectTotalCount(pagingVo));
+			List<SubVo> subVos = researchMapper.selectSubjectList((PagingVo) data.get("pagingVo"));
+			data.put("subVos", subVos);
+			data.remove("pagingVo");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		return data;
+	}
+
+	/**
+	 * subject를 등록하는데 필요한 기본 정보를 ModelMap에 담아 return함.
+	 * participatedResearchId, subjectNum, userName 세가지 속성이 map에 담김.
+	 */
+	@Override
+	public ModelMap getSubjectDefaultValue(PagingVo pagingVo, ModelMap model) {
+		
+		SubVo subVo = null;
+		int subjectNum = 0;
+		
+		try {
+			
+			subjectNum = researchMapper.selectSubjectTotalCount(pagingVo);
+			subVo = researchMapper.getNameTaskAndResearch(pagingVo.getParticipatedResearchId());
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		model.addAttribute("participatedResearchId", pagingVo.getParticipatedResearchId());
+		model.addAttribute("researchTaskId", pagingVo.getResearchTaskId());
+		model.addAttribute("subjectNum", subjectNum += 1);
+		model.addAttribute("userName", SecurityContextHolder.getContext().getAuthentication().getName());
+		
+		if (subVo != null) {
+			
+			model.addAttribute("taskName", subVo.getTaskName());
+			model.addAttribute("researchTaskName", subVo.getResearchTaskName());
+			
+		} else {
+			
+			model.addAttribute("taskName", null);
+			model.addAttribute("researchTaskName", null);
+		}
+		
+		return model;
+	}
+
+	@Override
+	public Map<String, Object> subjectRegistConfirm(SubVo subVo) {
+		log.debug("subjectRegistConfirm() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			researchMapper.insertSubject(subVo);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		log.debug("subjectRegistConfirm() 끝");
+		return result;
+	}
+
+	@Override
+	public void getSubjectDetail(ResearchVo researchVo, ModelMap model) {
+		
+		SubVo subVo = null;
+		
+		try {
+			
+			subVo = researchMapper.selectSubjectDetail(researchVo);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		model.addAttribute("subVo", subVo);
+		model.addAttribute("researchTaskId", researchVo.getResearchTaskId());
+	}
+
+	@Override
+	public Map<String, Object> subjectDelete(ResearchVo researchVo) {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			researchMapper.deleteSubject(researchVo);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> subjectModifyConfirm(SubVo subVo) {
+		log.debug("subjectModifyConfirm() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			researchMapper.updateSubject(subVo);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		log.debug("subjectModifyConfirm() 끝");
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> updateResearchStatus(ResearchVo researchVo) {
+		log.debug("updateResearchStatus() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			researchMapper.updateResearchStatus(researchVo);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		log.debug("updateResearchStatus() 끝");
+		return result;
+	}
+}

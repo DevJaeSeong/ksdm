@@ -1,0 +1,121 @@
+package egovframework.ksdmWeb.common.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.vo.BoardVo;
+import egovframework.ksdmWeb.common.vo.InsectVo;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.ksdmWeb.common.vo.TaskVo;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@Slf4j
+@SuppressWarnings("unchecked")
+public class CommonDataController {
+
+	@Resource(name = "commonDataService")
+	private CommonDataService commonDataService;
+	
+	@GetMapping("/getInsectList.do")
+	public Object getInsectList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> sendData = commonDataService.getInsectList(pagingVo);
+		
+		log.debug("==> insectVos count: {}", ((List<InsectVo>) sendData.get("insectVos")).size());
+		return sendData;
+	}
+	
+	@GetMapping("/getInsectByinsectNum.do")
+	public Object getInsectByinsectNum(@RequestParam("insectNum") String insectNum) {
+		log.debug("<== insectNum: {}", insectNum);
+		
+		InsectVo insectVo = commonDataService.getInsectByinsectNum(insectNum);
+		
+		log.debug("==> {}", insectVo.toString());
+		return insectVo;
+	}
+	
+	@GetMapping("/getBoardList.do")
+	public Object getBoardList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> sendData = commonDataService.getBoardList(pagingVo);
+		
+		log.debug("==> boardVos count: {}", ((List<BoardVo>) sendData.get("boardVos")).size());
+		return sendData;
+	}
+	
+	@GetMapping("/getBoardByBoardNum.do")
+	public Object getBoardByBoardNum(@RequestParam("boardNum") String boardNum) {
+		log.debug("<== boardNum: {}", boardNum);
+		
+		BoardVo boardVo = commonDataService.getBoardByBoardNum(boardNum);
+		
+		log.debug("==> {}", boardVo.toString());
+		return boardVo;
+	}
+	
+	@GetMapping("/getSubVoList.do")
+	public Object getSubVoList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> data = commonDataService.getSubVoList(pagingVo);
+		
+		log.debug("==> subVos count: {}", ((List<SubVo>) data.get("subVos")).size());
+		return data;
+	}
+	
+	@GetMapping("/getAllTaskList.do")
+	public Object getAllTaskList() {
+		log.debug("<== null");
+		
+		List<TaskVo> taskVos = commonDataService.getAllTaskList();
+		
+		log.debug("==> taskVos.size(): {}", taskVos.size());
+		return taskVos;
+	}
+	
+	@GetMapping("/getForecastList.do")
+	public Object getForecastList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> data = commonDataService.getForecastList(pagingVo);
+		
+		log.debug("==> forecastVos count: {}", ((List<ForecastVo>) data.get("forecastVos")).size());
+		return data;
+	}
+	
+	@GetMapping("/getForecastVo.do")
+	public Object getForecastVo(@RequestParam("forecastId") String forecastId) {
+		log.debug("<== forecastId: {}", forecastId);
+		
+		ForecastVo forecastVo = commonDataService.getForecastById(forecastId);
+		
+		log.debug("==> {}", forecastVo);
+		return forecastVo;
+	}
+	
+	@GetMapping("/searchInsect.do")
+	@ResponseBody
+	public Map<String, Object> searchInsect(@ModelAttribute PagingVo pagingVo) throws Exception {
+		log.debug("/searchInsect.do");
+		
+		Map<String, Object> data = commonDataService.searchInsect(pagingVo);
+		
+		log.debug("==> {} ", data);
+		return data;
+	}
+}

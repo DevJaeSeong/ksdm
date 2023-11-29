@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.admin.adminInsectInfo.service.impl.AdminInsectInfoMapper">
+	
+	<insert id="insertInsectInfo" parameterType="InsectVo" useGeneratedKeys="true" keyProperty="insectNum">
+		INSERT INTO 
+			EXOTIC_INSECTS_INFO_TB
+			(
+				KOR_SPECIFIC_NAME 
+				, ENG_SPECIFIC_NAME
+				, TAXON
+				, SAVED_FILE_NAME
+				, DESCRIPTION
+				, REG_ID
+			)
+		VALUES
+			(
+				#{korSpecificName}
+				, #{engSpecificName}
+				, #{taxon}
+				, #{savedFileName}
+				, #{description}
+				, #{regId}
+			 )
+	</insert>
+	
+	<insert id="insertInsectStatus" parameterType="InsectStatusVo">
+		INSERT INTO 
+			INSECT_STATUS_TB
+			(
+				INSECT_NUM
+				, INSECT_STATUS_CODE
+			)
+			VALUES
+			(
+				#{insectNum}
+				, #{insectStatusCode}
+			)
+	</insert>
+	
+	<update id="modifyInsectInfo" parameterType="InsectVo">
+		UPDATE 	
+			EXOTIC_INSECTS_INFO_TB
+		SET 
+			KOR_SPECIFIC_NAME = #{korSpecificName}
+			, ENG_SPECIFIC_NAME = #{engSpecificName}
+			, TAXON = #{taxon}
+			<if test="savedFileName != null and savedFileName != ''">
+			, SAVED_FILE_NAME = #{savedFileName}
+			</if>
+			, DESCRIPTION = #{description}
+			, MOD_ID = #{modId}
+			, MOD_DATE = NOW()
+		WHERE 
+			INSECT_NUM = #{insectNum}
+	</update>
+	
+	<delete id="deleteInsectStatus" parameterType="String">
+		DELETE FROM 
+			INSECT_STATUS_TB
+		WHERE 
+			INSECT_NUM = #{insectNum}
+	</delete>
+	
+	<delete id="deleteInsectInfo" parameterType="String">
+		DELETE FROM 
+			EXOTIC_INSECTS_INFO_TB
+		WHERE 
+			INSECT_NUM = #{insectNum}
+	</delete>
+	
+</mapper>

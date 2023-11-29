@@ -1,0 +1,112 @@
+package egovframework.ksdmWeb.admin.userManagement.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.admin.userManagement.service.AuthorityVo;
+import egovframework.ksdmWeb.admin.userManagement.service.ResearchAreaVo;
+import egovframework.ksdmWeb.admin.userManagement.service.UserManagementService;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.security.UserDetailVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/admin")
+@Slf4j
+public class UserManagementController {
+
+	@Resource(name = "userManagementService")
+	private UserManagementService userManagementService;
+	
+	@GetMapping("/userListPage.do")
+	public String userListPage() {
+		log.debug("/userListPage.do");
+		
+		return "/admin/userManagement/userListPage";
+	}
+	
+	@GetMapping("/getUserList.do")
+	@ResponseBody
+	@SuppressWarnings("unchecked")
+	public Object getUserList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo.toString());
+		
+		Map<String, Object> data = userManagementService.getUserList(pagingVo);
+		
+		log.debug("==> userDetailVos count: {}", ((List<UserDetailVo>) data.get("userDetailVos")).size());
+		return data;
+	}
+	
+	@GetMapping("/userRegistPage.do")
+	public String userRegistPage(Model model) {
+		log.debug("/userRegistPage.do");
+		
+		List<AuthorityVo> authorityVos = userManagementService.getAllAuthorityList();
+		List<ResearchAreaVo> researchAreaVos = userManagementService.getAllResearchAreaList();
+		
+		model.addAttribute("authorityVos", authorityVos);
+		model.addAttribute("researchAreaVos", researchAreaVos);
+		
+		return "/admin/userManagement/userRegistPage";
+	}
+	
+	@PostMapping("/checkId.do")
+	@ResponseBody
+	public Object checkId(@RequestBody Map<String, String> reciveData) {
+		log.debug("<== userId: {}", reciveData);
+		
+		Map<String, Object> result = userManagementService.checkId(reciveData.get("userId"));
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@PostMapping("/registUser.do")
+	@ResponseBody
+	public Object registUser(@RequestBody UserDetailVo userDetailVo) {
+		log.debug("<== {}", userDetailVo.toString());
+		
+		Map<String, Object> result = userManagementService.registUser(userDetailVo);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	@GetMapping("/userDetailPage.do")
+	public String userDetailPage(@RequestParam("userId") String userId, Model model) {
+		log.debug("/userDetailPage.do");
+		
+		UserDetailVo userDetailVo = userManagementService.getUserDetailById(userId);
+		List<AuthorityVo> authorityVos = userManagementService.getAllAuthorityList();
+		List<ResearchAreaVo> researchAreaVos = userManagementService.getAllResearchAreaList();
+		
+		model.addAttribute("userDetailVo", userDetailVo);
+		model.addAttribute("authorityVos", authorityVos);
+		model.addAttribute("researchAreaVos", researchAreaVos);
+		
+		return "/admin/userManagement/userDetailPage";
+	}
+	
+	@PostMapping("/userModify.do")
+	@ResponseBody
+	public Object userModify(@RequestBody UserDetailVo userDetailVo) {
+		log.debug("<== {}", userDetailVo);
+		
+		Map<String, Object> result = userManagementService.userModify(userDetailVo);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+}

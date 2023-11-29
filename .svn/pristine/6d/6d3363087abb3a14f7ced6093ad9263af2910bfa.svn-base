@@ -1,0 +1,23 @@
+package egovframework.ksdmWeb.common.vo;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class BoardVo {
+
+	private String boardNum;
+	private String boardDiv;
+	private String boardSubject;
+	private String boardContents;
+	private String regId;
+	private String regNm;
+	private String regDate;
+	private String modifyId;
+	private String modifyDate;
+	private String attachement;
+	private String attachFilenm;
+	private String views;
+	private MultipartFile file;
+}

@@ -1,0 +1,11 @@
+package egovframework.ksdmWeb.general.insectForecast.service;
+
+import java.util.Map;
+
+import egovframework.ksdmWeb.common.vo.InsectForecastVo;
+
+public interface InsectForecastService {
+
+	Map<String, Object> getForecastImage(InsectForecastVo insectForecastVo);
+	public void updateViews(String forecastId);
+}

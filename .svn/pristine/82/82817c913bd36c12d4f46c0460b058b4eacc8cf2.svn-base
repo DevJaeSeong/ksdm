@@ -1,0 +1,49 @@
+package egovframework.ksdmWeb.admin.excelUpload.web;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.admin.excelUpload.service.ExcelUploadService;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/admin/excelUpload")
+@Slf4j
+public class ExcelUploadController {
+
+	@Resource(name = "excelUploadService")
+	private ExcelUploadService excelUploadService;
+	
+	/**
+	 * 엑셀업로드 > 조사자료엑셀 업로드 화면
+	 */
+	@GetMapping("/excelUploadPage.do")
+	public String excelUploadPage() {
+		log.debug("/excelUploadPage.do");
+		
+		return "admin/excelUpload/excelUploadPage";
+	}
+	
+	/**
+	 * 조사자료엑셀 업로드
+	 */
+	@PostMapping("/excelUpload.do")
+	@ResponseBody
+	public Object excelUpload(@RequestParam("file") MultipartFile file) {
+		log.debug("<== {}", file);
+		
+		Map<String, Object> result = excelUploadService.excelUpload(file);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+}

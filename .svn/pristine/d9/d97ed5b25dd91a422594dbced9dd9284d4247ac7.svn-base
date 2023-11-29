@@ -1,0 +1,389 @@
+package egovframework.ksdmWeb.common.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.common.paging.PagingMaker;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.vo.BoardVo;
+import egovframework.ksdmWeb.common.vo.InsectStatusVo;
+import egovframework.ksdmWeb.common.vo.InsectVo;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.ksdmWeb.common.vo.TaskVo;
+import egovframework.ksdmWeb.common.vo.UserInsectVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("commonDataService")
+@Slf4j
+public class CommonDataServiceImpl implements CommonDataService {
+
+	@Resource(name = "commonDataMapper")
+	private CommonDataMapper commonDataMapper;
+	
+	@Resource(name = "pagingMaker")
+	private PagingMaker pagingMaker;
+
+	@Override
+	public Map<String, Object> getInsectList(PagingVo pagingVo) {
+		log.debug("getInsectList() 시작");
+		
+		Map<String, Object> map = null;
+		
+		try {
+			
+			map = pagingMaker.pagingMake(pagingVo, commonDataMapper.getInsectListTotalCount(pagingVo));
+			List<InsectVo> oldInsectVos = commonDataMapper.getInsectList((PagingVo) map.get("pagingVo"));
+			map.remove("pagingVo");
+			
+			List<InsectVo> newInsectVos = new ArrayList<InsectVo>();
+			
+			for (InsectVo insectVo : oldInsectVos) {
+				
+				insectVo.setInsectStatusVos(getInsectStatusByinsectNum(insectVo.getInsectNum()));
+				newInsectVos.add(insectVo);
+			}
+			
+			map.put("insectVos", newInsectVos);
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getInsectList() 끝");
+		return map;
+	}
+
+	@Override
+	public InsectVo getInsectByinsectNum(String insectNum) {
+		log.debug("getInsectByinsectNum() 시작");
+		
+		InsectVo insectVo = null;
+		
+		try {
+			
+			insectVo = commonDataMapper.getInsectByinsectNum(insectNum);
+			insectVo.setInsectStatusVos(getInsectStatusByinsectNum(insectNum));
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getInsectByinsectNum() 끝");
+		return insectVo;
+	}
+
+	@Override
+	public List<InsectStatusVo> getInsectStatusByinsectNum(String insectNum) {
+		log.debug("getInsectStatusByinsectNum() 시작");
+		
+		List<InsectStatusVo> insectStatusVos = null;
+		
+		try {
+			
+			insectStatusVos = commonDataMapper.getInsectStatusByinsectNum(insectNum);
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getInsectStatusByinsectNum() 끝");
+		return insectStatusVos;
+	}
+
+	@Override
+	public Map<String, Object> getBoardList(PagingVo pagingVo) {
+		log.debug("getInsectList() 시작");
+		
+		Map<String, Object> map = null;
+		
+		try {
+			
+			map = pagingMaker.pagingMake(pagingVo, commonDataMapper.getBoardListTotalCount(pagingVo));
+			List<BoardVo> boardVos = commonDataMapper.getBoardList((PagingVo) map.get("pagingVo"));
+			map.put("boardVos", boardVos);
+			map.remove("pagingVo");
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getInsectList() 끝");
+		return map;
+	}
+
+	@Override
+	public BoardVo getBoardByBoardNum(String boardNum) {
+		log.debug("getBoardByBoardNum() 시작");
+		
+		BoardVo boardVo = null;
+		
+		try {
+			
+			boardVo = commonDataMapper.getBoardByBoardNum(boardNum);
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getBoardByBoardNum() 끝");
+		return boardVo;
+	}
+
+	@Override
+	public Map<String, Object> getSubVoList(PagingVo pagingVo) {
+		log.debug("getSubVoList() 시작");
+		
+		Map<String, Object> map = null;
+		List<SubVo> subVos = null;
+		
+		if (!mappingSearchColumn(pagingVo)) {
+			
+			log.error("알 수 없는 searchColumn: {}", pagingVo.getSearchColumn());
+			return map;
+		}
+		
+		try {
+			
+			if (pagingVo.getPageIndex() == 0) {
+				
+				subVos = commonDataMapper.getSubVoList(pagingVo);
+				map = new HashMap<String, Object>();
+				map.put("subVos", subVos);
+				
+			} else {
+				
+				map = pagingMaker.pagingMake(pagingVo, commonDataMapper.getSubVoListTotalCount(pagingVo));
+				subVos = commonDataMapper.getSubVoList((PagingVo) map.get("pagingVo"));
+				map.put("subVos", subVos);
+				map.remove("pagingVo");
+			}
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getSubVoList() 끝");
+		return map;
+	}
+	
+	/**
+	 * pagingVo의 필드값 searchColumn 을 쿼리문에 사용가능하도록 변경해줍니다.
+	 * 
+	 * @param pagingVo
+	 * @return 성공시 ture, 실패시 false
+	 */
+	private boolean mappingSearchColumn(PagingVo pagingVo) {
+		log.debug("<== searchColum: {}", pagingVo.getSearchColumn());
+		
+		String searchColumn = pagingVo.getSearchColumn();
+		boolean result = true;
+		
+		if (searchColumn == null) {
+			
+			log.debug("==> result: {}", result);
+			return result;
+		}
+		
+		switch (searchColumn) {
+		
+			case "년도별조사업무":
+				pagingVo.setSearchColumn("TASK_NAME");
+				break;
+				
+			case "조사업무명":
+				pagingVo.setSearchColumn("RESEARCH_TASK_NAME");
+				break;
+				
+			case "조사기관":
+				pagingVo.setSearchColumn("SUB_RESEARCH_GROUP");
+				break;
+				
+			case "조사장소(주소)":
+				pagingVo.setSearchColumn("SUB_RESEARCH_LOCATION");
+				break;
+				
+			case "장소유형":
+				pagingVo.setSearchColumn("SUB_LOCATION_CATEGORY");
+				break;
+				
+			case "발생여부":
+				pagingVo.setSearchColumn("SUB_OCCURRENCE_STATUS");
+				break;
+				
+			case "해충명":
+				pagingVo.setSearchColumn("SUB_INSECT_NAME");
+				break;
+				
+			case "상태":
+				pagingVo.setSearchColumn("SUB_INSECT_STATUS");
+				break;
+				
+			case "기주식물명":
+				pagingVo.setSearchColumn("SUB_PLANT_NAME");
+				break;
+				
+			case "식물 내 발생 위치":
+				pagingVo.setSearchColumn("SUB_OCCURRENCE_LOCATION_IN_PLANT");
+				break;
+				
+			case "기타 조사지 내 식물군":
+				pagingVo.setSearchColumn("SUB_ETC_PLANT");
+				break;
+				
+			case "기타 특이사항 및 환경":
+				pagingVo.setSearchColumn("SUB_ETC_LOCATION");
+				break;
+				
+			case "도로종류":
+				pagingVo.setSearchColumn("SUB_ROAD_CATEGORY");
+				break;
+	
+			default:
+				result = false;
+				break;
+		}
+		
+		log.debug("==> result: {}", result);
+		return result;
+	}
+	
+	@Override
+	public Map<String, Object> getSubWaitList(PagingVo pagingVo) {
+		log.debug("getSubVoList() 시작");
+		
+		Map<String, Object> map = null;
+		List<SubVo> subVos = null;
+		
+		try {
+			
+			if (pagingVo.getPageIndex() == 0) {
+				
+				subVos = commonDataMapper.getSubWaitList(pagingVo);
+				map = new HashMap<String, Object>();
+				map.put("subVos", subVos);
+				
+			} else {
+				
+				map = pagingMaker.pagingMake(pagingVo, commonDataMapper.getSubWaitListTotalCount(pagingVo));
+				subVos = commonDataMapper.getSubWaitList((PagingVo) map.get("pagingVo"));
+				map.put("subVos", subVos);
+				map.remove("pagingVo");
+			}
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getSubVoList() 끝");
+		return map;
+	}
+
+	@Override
+	public List<TaskVo> getAllTaskList() {
+		log.debug("getAllTaskList() 시작");
+		
+		List<TaskVo> taskVos = new ArrayList<TaskVo>();
+		
+		try {
+			
+			taskVos = commonDataMapper.getAllTaskList();
+			
+		} catch (Exception e) {
+
+			log.debug("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getAllTaskList() 끝");
+		return taskVos;
+	}
+
+	@Override
+	public Map<String, Object> getForecastList(PagingVo pagingVo) {
+		log.debug("getForecastList() 시작");
+		
+		Map<String, Object> data = null;
+		
+		try {
+			
+			data = pagingMaker.pagingMake(pagingVo, commonDataMapper.getForecastListTotalCount(pagingVo));
+			List<ForecastVo> forecastVos = commonDataMapper.getForecastList((PagingVo) data.get("pagingVo"));
+			
+			data.put("forecastVos", forecastVos);
+			data.remove("pagingVo");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getForecastList() 끝");
+		return data;
+	}
+
+	@Override
+	public ForecastVo getForecastById(String forecastId) {
+		log.debug("getForecastByTaskId() 시작");
+		
+		ForecastVo forecastVo =  null;
+		
+		try {
+			
+			forecastVo = commonDataMapper.getForecastById(forecastId);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getForecastByTaskId() 끝");
+		return forecastVo;
+	}
+
+	@Override
+	public Map<String, Object> searchInsect(PagingVo pagingVo) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		try {
+			
+			map = pagingMaker.pagingMake(pagingVo, commonDataMapper.selectInsectTotalCount(pagingVo));
+			pagingVo = (PagingVo) map.get("pagingVo");
+			List<UserInsectVo> researchVos = commonDataMapper.selectInsectList(pagingVo);
+			
+			map.put("researchVos", researchVos);
+			map.remove("pagingVo");
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		return map;
+	}
+}

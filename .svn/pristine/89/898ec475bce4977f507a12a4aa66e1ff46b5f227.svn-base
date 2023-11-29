@@ -1,0 +1,44 @@
+package egovframework.ksdmWeb.general.ksdmIntroduction.web;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * K-SDM소개 항목.
+ */
+@Controller
+@Slf4j
+public class IntroductionController {
+
+	/**
+	 * 비전 및 소개 화면.
+	 */
+	@GetMapping("/visionAndGoalsPage.do")
+	public String visionAndGoalsPage() {
+		log.debug("/visionAndGoalsPage.do");
+		
+		return "/general/ksdmIntroduction/visionAndGoalsPage";
+	}
+	
+	/**
+	 * 비전 및 소개 화면.
+	 */
+	@GetMapping("/organizationalChartPage.do")
+	public String organizationalChartPage() {
+		log.debug("/organizationalChartPage.do");
+		
+		return "/general/ksdmIntroduction/organizationalChartPage";
+	}
+	
+	/**
+	 * 소속참여기관 화면.
+	 */
+	@GetMapping("/affiliatedOrganizationPage.do")
+	public String affiliatedOrganizationPage() {
+		log.debug("/affiliatedOrganizationPage.do");
+		
+		return "/general/ksdmIntroduction/affiliatedOrganizationPage";
+	}
+}

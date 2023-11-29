@@ -1,0 +1,17 @@
+package egovframework.ksdmWeb.general.insectDistribution.vo;
+
+import lombok.Data;
+
+@Data
+public class InsectDistributionVo {
+
+	private String ggd;		// 경기도
+	private String gwd;		// 강원도
+	private String cnd;		// 충청남도
+	private String cbd;		// 충청북도
+	private String gbd;		// 경상북도
+	private String gnd;		// 경상남도
+	private String jbd;		// 전라북도
+	private String jnd;		// 전라남도
+	private String jjd;		// 제주도
+}

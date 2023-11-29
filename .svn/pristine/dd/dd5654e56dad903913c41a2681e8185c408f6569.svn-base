@@ -1,0 +1,73 @@
+package egovframework.ksdmWeb.general.insectForecast.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.vo.InsectForecastVo;
+import egovframework.ksdmWeb.general.insectForecast.service.InsectForecastService;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class InsectForecastController {
+	
+	@Resource(name = "insectForecastService")
+	private InsectForecastService insectForecastService;
+	
+	@Resource(name = "commonDataService")
+	private CommonDataService commonDataService;
+
+	@GetMapping("/insectForecastPage.do")
+	public String insectForecastPage() {
+		log.debug("/insectForecastPage.do");
+		
+		return "/general/insectForecast/insectForecastPage";
+	}
+	
+	@GetMapping("/getinsectForecastList.do")
+	@ResponseBody
+	@SuppressWarnings("unchecked")
+	public Object getinsectForecastList(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> data = commonDataService.getForecastList(pagingVo);
+		
+		log.debug("==> forcastVos count:{}", ((List<ForecastVo>) data.get("forecastVos")).size());
+		return data;
+	}
+	
+	@GetMapping("/insectForecastDetailPage.do")
+	public String insectForecastDetailPage(@RequestParam("forecastId") String forecastId, ModelMap model) {
+		log.debug("/insectForecastDetailPage.do");
+	    
+		insectForecastService.updateViews(forecastId);
+	    model.addAttribute("forecastId", forecastId);
+		
+		return "/general/insectForecast/insectForecastDetailPage";
+	}
+	
+	@GetMapping("/getForecastImage.do")
+	@ResponseBody
+	public Map<String, Object> getForecastImage(@ModelAttribute InsectForecastVo insectForecastVo) throws Exception {
+		log.debug("/getSubjectList.do");
+		
+		Map<String, Object> data = insectForecastService.getForecastImage(insectForecastVo);
+		
+		log.debug("<== " + data);
+		
+		return data;
+	}
+	
+}

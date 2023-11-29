@@ -1,0 +1,22 @@
+package egovframework.ksdmWeb.user.research.service;
+
+import lombok.Data;
+
+/**
+ * user의 Research정보를 담기 위한 Vo객체.
+ */
+@Data
+public class ResearchVo {
+
+	private String taskId;
+	private String taskName;
+	private String researchTaskId;
+	private String researchTaskName;
+	private String participatedResearchId;
+	private String researchStatusCode;
+	private String researchStatusName;
+	private String rejectReason;
+	private String researchSubmissionDate;
+	private String subjectNum;
+	private String UserId;
+}

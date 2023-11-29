@@ -1,0 +1,8 @@
+package egovframework.ksdmWeb.user.common.mapper;
+
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("userCommonMapper")
+public interface UserCommonMapper {
+
+}

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.admin.userManagement.service.impl.UserManagementMapper">
+	
+	<resultMap id="UserDetailVoMap" type="UserDetailVo">
+        <result property="userId" 					column="USER_ID"/>
+        <result property="userName" 				column="USER_NAME"/>
+        <result property="userPhone" 				column="USER_PHONE"/>
+        <result property="researchAreaCode" 		column="RESEARCH_AREA_CODE"/>
+        <result property="researchAreaName" 		column="RESEARCH_AREA_NAME"/>
+        <result property="userNote" 				column="USER_NOTE"/>
+        <result property="regId" 					column="REG_ID"/>
+        <result property="regDate" 					column="REG_DATE"/>
+        <result property="authorityId" 				column="AUTHORITY_ID"/>
+        <result property="authorityName" 			column="AUTHORITY_NAME"/>
+    </resultMap>
+    
+	<resultMap id="AuthorityVoMap" type="AuthorityVo">
+        <result property="authorityId" 				column="AUTHORITY_ID"/>
+        <result property="authorityName" 			column="AUTHORITY_NAME"/>
+    </resultMap>
+    
+	<resultMap id="ResearchAreaVoMap" type="ResearchAreaVo">
+        <result property="researchAreaCode" 		column="RESEARCH_AREA_CODE"/>
+        <result property="researchAreaName" 		column="RESEARCH_AREA_NAME"/>
+    </resultMap>
+	
+	<select id="getUserListTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM 
+		    USER_INFO_TB
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND USER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR USER_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="getUserList" parameterType="PagingVo" resultMap="UserDetailVoMap">
+		SELECT 
+		    U.USER_ID AS USER_ID
+		    , U.USER_PW AS USER_PW
+		    , U.USER_NAME AS USER_NAME
+		    , U.USER_PHONE AS USER_PHONE
+		    , U.RESEARCH_AREA_CODE AS RESEARCH_AREA_CODE
+		    , R.RESEARCH_AREA_NAME AS RESEARCH_AREA_NAME
+		    , U.USER_NOTE AS USER_NOTE
+		    , U.REG_ID AS REG_ID
+		    , DATE_FORMAT(U.REG_DATE, '%Y-%m-%d') AS REG_DATE
+		    , U.AUTHORITY_ID AS AUTHORITY_ID
+		    , A.AUTHORITY_NAME AS AUTHORITY_NAME
+		FROM 
+		    USER_INFO_TB AS U
+		    JOIN RESEARCH_AREA_TB AS R ON U.RESEARCH_AREA_CODE = R.RESEARCH_AREA_CODE
+		    JOIN AUTHORITY_TB AS A ON U.AUTHORITY_ID = A.AUTHORITY_ID
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND USER_ID LIKE CONCAT('%', #{searchKeyword}, '%')
+					OR USER_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+		LIMIT #{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="getAllAuthorityList" resultMap="AuthorityVoMap">
+		SELECT
+			AUTHORITY_ID
+			,AUTHORITY_NAME
+		FROM
+			AUTHORITY_TB
+	</select>
+	
+	<select id="getAllResearchAreaList" resultMap="ResearchAreaVoMap">
+		SELECT
+			RESEARCH_AREA_CODE
+			,RESEARCH_AREA_NAME
+		FROM
+			RESEARCH_AREA_TB
+	</select>
+	
+	<select id="getUserDetailById" parameterType="String" resultMap="UserDetailVoMap">
+		SELECT 
+		    U.USER_ID AS USER_ID
+		    , U.USER_PW AS USER_PW
+		    , U.USER_NAME AS USER_NAME
+		    , U.USER_PHONE AS USER_PHONE
+		    , U.RESEARCH_AREA_CODE AS RESEARCH_AREA_CODE
+		    , R.RESEARCH_AREA_NAME AS RESEARCH_AREA_NAME
+		    , U.USER_NOTE AS USER_NOTE
+		    , U.REG_ID AS REG_ID
+		    , DATE_FORMAT(U.REG_DATE, '%Y-%m-%d') AS REG_DATE
+		    , U.AUTHORITY_ID AS AUTHORITY_ID
+		    , A.AUTHORITY_NAME AS AUTHORITY_NAME
+		FROM 
+		    USER_INFO_TB AS U
+		    JOIN RESEARCH_AREA_TB AS R ON U.RESEARCH_AREA_CODE = R.RESEARCH_AREA_CODE
+		    JOIN AUTHORITY_TB AS A ON U.AUTHORITY_ID = A.AUTHORITY_ID
+		WHERE
+			U.USER_ID = #{userId}
+	</select>
+	
+	<update id="updateUserDetail" parameterType="UserDetailVo">
+		UPDATE
+			USER_INFO_TB
+		SET
+			USER_NAME = #{userName}
+			, USER_PHONE = #{userPhone}
+			, RESEARCH_AREA_CODE = #{researchAreaCode}
+			, USER_NOTE = #{userNote}
+			, AUTHORITY_ID = #{authorityId}
+			, MOD_ID = #{modId}
+			, MOD_DATE = NOW()
+		WHERE
+			USER_ID = #{userId}
+	</update>
+	
+</mapper>

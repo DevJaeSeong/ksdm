@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.admin.researchData.service.impl.ResearchDataMapper">
+	
+	<resultMap id="ResearchDataVoMap" type="ResearchDataVo">
+	 	<result property="taskId" 							column="TASK_ID"/>
+	 	<result property="taskName" 						column="TASK_NAME"/>
+	 	<result property="researchTaskName" 				column="RESEARCH_TASK_NAME"/>
+	 	<result property="researchStatusName" 				column="RESEARCH_STATUS_NAME"/>
+	 	<result property="participatedResearchId" 			column="PARTICIPATED_RESEARCH_ID"/>
+	 	<result property="rejectReason" 					column="REJECT_REASON"/>
+	 	<result property="researchSubmissionDate" 			column="RESEARCH_SUBMISSION_DATE"/>
+	 	<result property="researchTaskName" 				column="RESEARCH_TASK_NAME"/>
+	 	<result property="subjectName" 						column="SUBJECT_NAME"/>
+	 	<result property="subjectNum" 						column="SUBJECT_NUM"/>
+	 	<result property="korSpecificName" 					column="KOR_SPECIFIC_NAME"/>
+	    <result property="researchDate" 					column="RESEARCH_DATE"/>
+	    <result property="researchStartTime" 				column="RESEARCH_START_TIME"/>
+	    <result property="researchEndTime" 					column="RESEARCH_END_TIME"/>
+	    <result property="researchUsers" 					column="RESEARCH_USERS"/>
+	    <result property="subjectWeatherName" 				column="SUBJECT_WEATHER_NAME"/>
+	    <result property="subjectWeatherCode" 				column="SUBJECT_WEATHER_CODE"/>
+	    <result property="subjectTemp" 						column="SUBJECT_TEMP"/>
+	    <result property="subjectPlace" 					column="SUBJECT_PLACE"/>
+	    <result property="subjectPosX" 						column="SUBJECT_POS_X"/>
+	    <result property="subjectPosY" 						column="SUBJECT_POS_Y"/>
+	    <result property="subjectAltitude" 					column="SUBJECT_ALTITUDE"/>
+	    <result property="subjectPlaceType" 				column="SUBJECT_PLACE_TYPE"/>
+	    <result property="insectNum" 						column="INSECT_NUM"/>
+        <result property="subjectStatus" 					column="SUBJECT_STATUS"/>
+        <result property="pestInfestationLevel" 			column="PEST_INFESTATION_LEVEL"/>
+        <result property="pestExistencePosition" 			column="PEST_EXISTENCE_POSITION"/>
+        <result property="plantInarea" 						column="PLANT_INAREA"/>
+        <result property="subjectNote" 						column="SUBJECT_NOTE"/>
+        <result property="distFromroad" 					column="DIST_FROMROAD"/>
+        <result property="roadType" 						column="ROAD_TYPE"/>
+        <result property="regDate" 							column="REG_DATE"/>
+        <result property="userName" 						column="USER_NAME"/>
+        <result property="subjectActive" 					column="SUBJECT_ACTIVE"/>
+        <result property="researchTaskId" 					column="RESEARCH_TASK_ID"/>
+        <result property="taskName" 						column="TASK_NAME"/>
+        <result property="researchDataNum" 					column="RESEARCH_DATA_NUM"/>
+	</resultMap>
+	
+	<select id="getAllSubjectList" resultMap="ResearchDataVoMap">
+		SELECT
+			SUBJECT_NUM,
+			PARTICIPATED_RESEARCH_ID,
+			DATE_FORMAT(RESEARCH_DATE, '%Y-%m-%d') AS RESEARCH_DATE,
+			RESEARCH_START_TIME,
+			RESEARCH_END_TIME,
+			RESEARCH_USERS,
+			SUBJECT_WEATHER_TB.SUBJECT_WEATHER_NAME,
+			SUBJECT_TB.SUBJECT_WEATHER_CODE,
+			SUBJECT_TEMP,
+			SUBJECT_PLACE,
+			SUBJECT_POS_X,
+			SUBJECT_POS_Y,
+			SUBJECT_ALTITUDE,
+			SUBJECT_PLACE_TYPE,
+			SUBJECT_ACTIVE,
+			EXOTIC_INSECTS_INFO_TB.KOR_SPECIFIC_NAME,
+			SUBJECT_STATUS,
+			SUBJECT_NAME,
+			PEST_INFESTATION_LEVEL,
+			PEST_EXISTENCE_POSITION,
+			PLANT_INAREA,
+			SUBJECT_NOTE,
+			DIST_FROMROAD,
+			ROAD_TYPE,
+			USER_NAME,
+			SUBJECT_TB.INSECT_NUM
+		FROM
+			SUBJECT_TB
+		LEFT JOIN
+			SUBJECT_WEATHER_TB
+		ON 
+			SUBJECT_WEATHER_TB.SUBJECT_WEATHER_CODE = SUBJECT_TB.SUBJECT_WEATHER_CODE
+		LEFT JOIN
+			EXOTIC_INSECTS_INFO_TB
+		ON 
+			EXOTIC_INSECTS_INFO_TB.INSECT_NUM = SUBJECT_TB.INSECT_NUM
+	</select>
+	
+	<select id="getResearchDataTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			SUBJECT_TB
+		LEFT JOIN
+			SUBJECT_WEATHER_TB
+		ON 
+			SUBJECT_WEATHER_TB.SUBJECT_WEATHER_CODE = SUBJECT_TB.SUBJECT_WEATHER_CODE
+		LEFT JOIN
+			EXOTIC_INSECTS_INFO_TB
+		ON 
+			EXOTIC_INSECTS_INFO_TB.INSECT_NUM = SUBJECT_TB.INSECT_NUM
+		<where>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND RESEARCH_DATE >= #{dateStar}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateEnd != null and dateEnd != ''">
+					<![CDATA[AND RESEARCH_DATE <= #{dateEnd}]]>
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="getResearchData" parameterType="PagingVo" resultMap="ResearchDataVoMap">
+		SELECT
+			SUBJECT_NUM,
+			PARTICIPATED_RESEARCH_ID,
+			DATE_FORMAT(RESEARCH_DATE, '%Y-%m-%d') AS RESEARCH_DATE,
+			RESEARCH_START_TIME,
+			RESEARCH_END_TIME,
+			RESEARCH_USERS,
+			SUBJECT_WEATHER_TB.SUBJECT_WEATHER_NAME,
+			SUBJECT_TB.SUBJECT_WEATHER_CODE,
+			SUBJECT_TEMP,
+			SUBJECT_PLACE,
+			SUBJECT_POS_X,
+			SUBJECT_POS_Y,
+			SUBJECT_ALTITUDE,
+			SUBJECT_PLACE_TYPE,
+			SUBJECT_ACTIVE,
+			EXOTIC_INSECTS_INFO_TB.KOR_SPECIFIC_NAME,
+			SUBJECT_STATUS,
+			SUBJECT_NAME,
+			PEST_INFESTATION_LEVEL,
+			PEST_EXISTENCE_POSITION,
+			PLANT_INAREA,
+			SUBJECT_NOTE,
+			DIST_FROMROAD,
+			ROAD_TYPE,
+			USER_NAME,
+			SUBJECT_TB.INSECT_NUM
+		FROM
+			SUBJECT_TB
+		LEFT JOIN
+			SUBJECT_WEATHER_TB
+		ON 
+			SUBJECT_WEATHER_TB.SUBJECT_WEATHER_CODE = SUBJECT_TB.SUBJECT_WEATHER_CODE
+		LEFT JOIN
+			EXOTIC_INSECTS_INFO_TB
+		ON 
+			EXOTIC_INSECTS_INFO_TB.INSECT_NUM = SUBJECT_TB.INSECT_NUM
+		<where>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND RESEARCH_DATE >= #{dateStar}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateEnd != null and dateEnd != ''">
+					<![CDATA[AND RESEARCH_DATE <= #{dateEnd}]]>
+				</when>
+			</choose>
+		</where>
+		LIMIT #{firstIndex}, #{pageUnit}
+	</select>
+	
+	<insert id="insertResearchData" parameterType="ResearchDataVo">
+		INSERT INTO
+			SUBJECT_FOR_EXCEL_TB
+			(
+				TASK_NAME
+				, RESEARCH_TASK_NAME
+				, RESEARCH_DATA_NUM
+				, RESEARCH_DATE
+				, RESEARCH_START_TIME
+				, RESEARCH_END_TIME
+				, USER_NAME
+				, RESEARCH_USERS
+				, SUBJECT_WEATHER_NAME
+				, SUBJECT_TEMP
+				, SUBJECT_PLACE
+				, SUBJECT_POS_X
+				, SUBJECT_POS_Y
+				, SUBJECT_ALTITUDE
+				, SUBJECT_PLACE_TYPE
+				, SUBJECT_ACTIVE
+				, INSECT_NUM
+				, SUBJECT_STATUS
+				, SUBJECT_NUM
+				, SUBJECT_NAME
+				, PEST_INFESTATION_LEVEL
+				, PEST_EXISTENCE_POSITION
+				, SUBJECT_NOTE
+				, DIST_FROMROAD
+				, ROAD_TYPE
+			)
+			VALUES
+			(
+				#{taskName}
+				, #{researchTaskName}
+				, #{researchDataNum}
+				, #{researchDate}
+				, #{researchStartTime}
+				, #{researchEndTime}
+				, #{userName}
+				, #{researchUsers}
+				, #{subjectWeatherName}
+				, #{subjectTemp}
+				, #{subjectPlace}
+				, #{subjectPosX}
+				, #{subjectPosY}
+				, #{subjectAltitude}
+				, #{subjectPlaceType}
+				, #{subjectActive}
+				, #{insectNum}
+				, #{subjectStatus}
+				, #{subjectNum}
+				, #{subjectName}
+				, #{pestInfestationLevel}
+				, #{pestExistencePosition}
+				, #{subjectNote}
+				, #{distFromroad}
+				, #{roadType}
+			)
+	</insert>
+	
+</mapper>

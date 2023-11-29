@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.admin.taskAndResearch.service.impl.TaskAndResearchMapper">
+	
+	<resultMap id="TaskAndResearchVo" type="TaskAndResearchVo">
+	
+	 	<result property="taskId" 							column="TASK_ID"/>
+	 	<result property="taskName" 						column="TASK_NAME"/>
+	 	<result property="researchTaskName" 				column="RESEARCH_TASK_NAME"/>
+	 	<result property="researchStatusName" 				column="RESEARCH_STATUS_NAME"/>
+	 	<result property="participatedResearchId" 			column="PARTICIPATED_RESEARCH_ID"/>
+	 	<result property="rejectReason" 					column="REJECT_REASON"/>
+	 	<result property="researchSubmissionDate" 			column="RESEARCH_SUBMISSION_DATE"/>
+	 	<result property="researchTaskName" 				column="RESEARCH_TASK_NAME"/>
+        <result property="userName" 						column="USER_NAME"/>
+        <result property="researchTaskId" 					column="RESEARCH_TASK_ID"/>
+	 	
+	</resultMap>
+	
+	<insert id="insertResearchTask">
+		INSERT INTO 
+			RESEARCH_TASK_TB
+			(
+			RESEARCH_TASK_NAME, 
+			TASK_ID
+			)
+		VALUES
+			(
+			#{researchTaskName},
+			#{taskId}
+			)
+	</insert>
+	
+	<select id="selectParticipatedResearchList" resultMap="TaskAndResearchVo">
+	
+		SELECT 
+			RESEARCH_TASK_TB.RESEARCH_TASK_NAME, 
+			USER_INFO_TB.USER_NAME, 
+			RESEARCH_STATUS_TB.RESEARCH_STATUS_NAME, 
+			PARTICIPATED_RESEARCH_ID, 
+			REJECT_REASON, 
+			RESEARCH_SUBMISSION_DATE
+		FROM 
+			PARTICIPATED_RESEARCH_TB
+		JOIN
+			RESEARCH_STATUS_TB ON RESEARCH_STATUS_TB.RESEARCH_STATUS_CODE = PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE
+		JOIN
+			USER_INFO_TB ON USER_INFO_TB.USER_ID = PARTICIPATED_RESEARCH_TB.USER_ID
+		JOIN
+			RESEARCH_TASK_TB ON RESEARCH_TASK_TB.RESEARCH_TASK_ID = PARTICIPATED_RESEARCH_TB.RESEARCH_TASK_ID
+		WHERE 
+			PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE != '1001'
+		ORDER BY 
+	 		PARTICIPATED_RESEARCH_ID
+	 	DESC
+		LIMIT 
+	 		#{firstIndex}, #{pageUnit}
+			
+	</select>
+		
+	<select id="selectParticipatedResearchTotalCount" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM 
+			PARTICIPATED_RESEARCH_TB
+		WHERE 
+			PARTICIPATED_RESEARCH_TB.RESEARCH_STATUS_CODE != '1001'
+	</select>
+	
+	<update id="updateResearchStatus">
+		UPDATE 
+			PARTICIPATED_RESEARCH_TB
+		SET 
+			RESEARCH_STATUS_CODE = #{researchStatusCode}, 
+			REJECT_REASON = #{rejectReason}
+		WHERE 
+			PARTICIPATED_RESEARCH_ID = #{participatedResearchId};
+	</update>
+	
+	<select id="selectResearchTaskTotalCount" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM 
+			RESEARCH_TASK_TB
+		WHERE
+			IS_ENABLED > 0
+	</select>
+	
+	<select id="selectResearchTaskList" resultMap="TaskAndResearchVo">
+		SELECT 
+			RESEARCH_TASK_ID, 
+			RESEARCH_TASK_NAME, 
+			TASK_TB.TASK_NAME
+		FROM 
+			RESEARCH_TASK_TB
+		JOIN 
+			TASK_TB
+		ON
+			TASK_TB.TASK_ID = RESEARCH_TASK_TB.TASK_ID
+		WHERE
+			IS_ENABLED > 0
+		ORDER BY 
+	 		RESEARCH_TASK_ID DESC
+		LIMIT 
+	 		#{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="selectResearchTask" resultMap="TaskAndResearchVo">
+		SELECT 
+			RESEARCH_TASK_ID, 
+			RESEARCH_TASK_NAME, 
+			TASK_ID
+		FROM 
+			RESEARCH_TASK_TB
+		WHERE
+			RESEARCH_TASK_ID = #{researchTaskId}
+	</select>
+	
+	<update id="updateResearchTask">
+		UPDATE 
+			RESEARCH_TASK_TB
+		SET 
+			RESEARCH_TASK_NAME = #{researchTaskName}, 
+			TASK_ID = #{taskId}
+		WHERE 
+			RESEARCH_TASK_ID = #{researchTaskId}
+	</update>
+	
+	<update id="disableResearchTask" parameterType="String">
+		UPDATE
+			RESEARCH_TASK_TB
+		SET
+			IS_ENABLED = false
+		WHERE 
+			RESEARCH_TASK_ID = #{researchTaskId}
+	</update>
+	
+	<insert id="insertSubVo" parameterType="SubVo">
+		INSERT INTO
+			SUB_TB
+		(
+			TASK_NAME
+			, RESEARCH_TASK_NAME
+			, SUB_DATE
+			<if test="subStartTime != '' and subStartTime != null">
+			, SUB_START_TIME
+			</if>
+			<if test="subEndTime != '' and subEndTime != null">
+			, SUB_END_TIME
+			</if>
+			, SUB_RESEARCH_GROUP
+			, SUB_RESEARCH_MEMBERS
+			, SUB_WEATHER
+			, SUB_TEMPERATURE
+			, SUB_RESEARCH_LOCATION
+			, SUB_GPS_N
+			, SUB_GPS_E
+			, SUB_ALTITUDE
+			, SUB_LOCATION_CATEGORY
+			, SUB_OCCURRENCE_STATUS
+			, SUB_INSECT_NAME
+			, SUB_INSECT_STATUS
+			, SUB_NUM
+			, SUB_PLANT_NAME
+			, SUB_OCCURRENCE_DEGREE
+			, SUB_OCCURRENCE_LOCATION_IN_PLANT
+			, SUB_ETC_PLANT
+			, SUB_ETC_LOCATION
+			, SUB_DISTANCE_FROM_ROAD
+			, SUB_ROAD_CATEGORY
+			, PARTICIPATED_RESEARCH_ID
+		)
+		VALUES
+		(
+			#{taskName}
+			, #{researchTaskName}
+			, #{subDate}
+			<if test="subStartTime != '' and subStartTime != null">
+			, #{subStartTime}
+			</if>
+			<if test="subEndTime != '' and subEndTime != null">
+			, #{subEndTime}
+			</if>
+			, #{subResearchGroup}
+			, #{subResearchMembers}
+			, #{subWeather}
+			, #{subTemperature}
+			, #{subResearchLocation}
+			, #{subGpsN}
+			, #{subGpsE}
+			, #{subAltitude}
+			, #{subLocationCategory}
+			, #{subOccurrenceStatus}
+			, #{subInsectName}
+			, #{subInsectStatus}
+			, #{subNum}
+			, #{subPlantName}
+			, #{subOccurrenceDegree}
+			, #{subOccurrenceLocationInPlant}
+			, #{subEtcPlant}
+			, #{subEtcLocation}
+			, #{subDistanceFromRoad}
+			, #{subRoadCategory}
+			, #{participatedResearchId}
+		)
+	</insert>
+	
+	<delete id="deleteSubVo" parameterType="int">
+		DELETE FROM
+			SUB_TB
+		WHERE
+			SUB_ID = #{subId}
+	</delete>
+</mapper>

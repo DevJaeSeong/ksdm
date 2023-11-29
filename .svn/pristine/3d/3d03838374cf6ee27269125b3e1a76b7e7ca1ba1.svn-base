@@ -1,0 +1,167 @@
+package egovframework.ksdmWeb.admin.forecast.service.impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.admin.forecast.service.ForecastService;
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import egovframework.ksdmWeb.common.service.CommonDataService;
+import egovframework.ksdmWeb.common.util.fileUpload.FileManager;
+import egovframework.ksdmWeb.common.util.fileUpload.FilePathHolder;
+import egovframework.ksdmWeb.common.vo.FileVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("forecastService")
+@Slf4j
+public class ForecastServiceImpl implements ForecastService {
+	
+	@Resource(name = "forecastMapper")
+	private ForecastMapper forecastMapper;
+	
+	@Resource(name = "commonDataService")
+	private CommonDataService commonDataService;
+	
+	@Resource(name = "fileManager")
+	private FileManager fileManager;
+	
+	@Override
+	public Map<String, Object> uploadFiles(ForecastVo forecastVo) {
+		log.debug("uploadFiles() 시작");
+		
+		int filesCount = 6;
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<String> successUploadList = doUpload(forecastVo);
+		
+		if (successUploadList.size() == filesCount) {
+			
+			result.put("result", "success");
+
+		} else {
+			
+			fileManager.deleteFiles(successUploadList);
+			result.put("result", "fail");
+		}
+		
+		log.debug("uploadFiles() 끝");
+		return result;
+	}
+	
+	private List<String> doUpload(ForecastVo forecastVo) {
+		log.debug("<== {}", forecastVo);
+		
+		List<String> successUploadList = new ArrayList<String>();
+		
+		MultipartFile pngFile = forecastVo.getPngFile();
+		MultipartFile pdfFile = forecastVo.getPdfFile();
+		MultipartFile tifFile = forecastVo.getTifFile();
+		MultipartFile jpgFile = forecastVo.getJpgFile();
+		MultipartFile programFile = forecastVo.getProgramFile();
+		MultipartFile menualFile = forecastVo.getMenualFile();
+		
+		String pngFileName = pngFile.getOriginalFilename();
+		String pdfFileName = pdfFile.getOriginalFilename();
+		String tifFileName = tifFile.getOriginalFilename();
+		String jpgFileName = jpgFile.getOriginalFilename();
+		String programFileName = programFile.getOriginalFilename();
+		String menualFileName = menualFile.getOriginalFilename(); 
+		
+		Map<String, MultipartFile> files = new HashMap<String, MultipartFile>();
+		files.put(pngFileName, pngFile);
+		files.put(pdfFileName, pdfFile);
+		files.put(tifFileName, tifFile);
+		files.put(jpgFileName, jpgFile);
+		files.put(programFileName, programFile);
+		files.put(menualFileName, menualFile);
+		
+		for (Map.Entry<String, MultipartFile> entry : files.entrySet()) {
+			
+			String originalFileName = entry.getKey();
+			MultipartFile file = entry.getValue();
+			
+			String savedFileName = fileManager.fileUpload(file, FilePathHolder.FORECAST_FILE_PATH);
+			
+			if (savedFileName == null) break;
+			
+			if 		(originalFileName.equals(pngFileName)) 	   forecastVo.setPngFileName(savedFileName);
+			else if (originalFileName.equals(pdfFileName)) 	   forecastVo.setPdfFileName(savedFileName);
+			else if (originalFileName.equals(tifFileName)) 	   forecastVo.setTifFileName(savedFileName);
+			else if (originalFileName.equals(jpgFileName)) 	   forecastVo.setJpgFileName(savedFileName);
+			else if (originalFileName.equals(programFileName)) forecastVo.setProgramFileName(savedFileName);
+			else if (originalFileName.equals(menualFileName))  forecastVo.setMenualFileName(savedFileName);
+				
+			successUploadList.add(savedFileName);
+		}
+		
+		if (forecastVo.getPngFileName() != null && forecastVo.getPdfFileName() != null
+			&& forecastVo.getTifFileName() != null && forecastVo.getJpgFileName() != null
+			&& forecastVo.getProgramFileName() != null && forecastVo.getMenualFileName() != null) {
+			
+			try {
+				
+				forecastVo.setRegId(SecurityContextHolder.getContext().getAuthentication().getName());
+				forecastMapper.insertForeCastVo(forecastVo);
+				
+			} catch (Exception e) {
+				
+				log.error("DB에러");
+				e.printStackTrace();
+			}
+		}
+		
+		log.debug("==> {}", successUploadList);
+		return successUploadList;
+	}
+
+	@Override
+	public Map<String, Object> deleteFiles(List<String> taskIds) {
+		log.debug("deleteFiles() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		int successCount = 0;
+		
+		for (String taskId : taskIds) {
+			
+			ForecastVo forecastVo = commonDataService.getForecastById(taskId);
+			if (forecastVo == null) continue;
+			
+			try {
+				
+				if (forecastMapper.deleteForecast(taskId) > 0) {
+					
+					List<String> savedFileNames = new ArrayList<String>();
+					savedFileNames.add(forecastVo.getPngFileName());
+					savedFileNames.add(forecastVo.getPdfFileName());
+					savedFileNames.add(forecastVo.getTifFileName());
+					savedFileNames.add(forecastVo.getJpgFileName());
+					savedFileNames.add(forecastVo.getProgramFileName());
+					savedFileNames.add(forecastVo.getMenualFileName());
+					
+					fileManager.deleteFiles(savedFileNames);
+				}
+				successCount++;
+				
+			} catch (Exception e) {
+				
+				log.error("DB에러");
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		if (successCount == taskIds.size())
+			result.put("result", "success");
+		else
+			result.put("result", "fail");
+				
+		log.debug("deleteFiles() 끝");
+		return result;
+	}
+}

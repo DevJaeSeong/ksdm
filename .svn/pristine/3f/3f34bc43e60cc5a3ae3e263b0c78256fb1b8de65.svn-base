@@ -1,0 +1,29 @@
+package egovframework.ksdmWeb.common.vo;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+/**
+ * 외래곤충 예측 이미지의 정보를 담기위한 Vo객체
+ */
+
+@Data
+public class InsectForecastVo {
+
+	private String userId;
+	private String taskId;
+	private String regDate;
+	
+	private MultipartFile pngFile;
+	private MultipartFile pdfFile;
+	private MultipartFile tifFile;
+	private MultipartFile jpgFile;
+	private MultipartFile imageFile;
+	private String imageId;
+	
+	private String oriImageName;
+	private String saveImageName;
+	private String imageExtension;
+	
+}

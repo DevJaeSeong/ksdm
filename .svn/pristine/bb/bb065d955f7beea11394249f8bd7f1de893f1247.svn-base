@@ -1,0 +1,42 @@
+package egovframework.ksdmWeb.general.insectDistribution.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.general.insectDistribution.service.InsectDistributionService;
+import egovframework.ksdmWeb.general.insectDistribution.vo.InsectDistributionVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("insectDistributionService")
+@Slf4j
+public class InsectDistributionServiceImpl implements InsectDistributionService {
+	
+	@Resource(name = "insectDistributionMapper")
+	private InsectDistributionMapper insectDistributionMapper;
+	
+	@Override
+	public Map<String, Object> getDistributionData(PagingVo pagingVo) {
+		log.debug("getDistributionData() 시작");
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		
+		try {
+			
+			InsectDistributionVo insectDistributionVo = insectDistributionMapper.getDistributionVo(pagingVo);
+			data.put("insectDistributionVo", insectDistributionVo);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getDistributionData() 끝");
+		return data;
+	}
+}

@@ -1,0 +1,47 @@
+package egovframework.ksdmWeb.admin.researchData.service;
+
+import lombok.Data;
+
+@Data
+public class ResearchDataVo {
+	
+	private String taskName;
+	private String taskId;
+	private String researchTaskName;
+	private String researchDataNum;
+	private String researchDate;
+	private String researchStartTime;
+	private String researchEndTime;
+	private String userName;
+	private String researchUsers;
+	private String subjectWeatherName;
+	private String subjectTemp;
+	private String subjectPlace;
+	private String subjectPosX;
+	private String subjectPosY;
+	private String subjectAltitude;
+	private String subjectPlaceType;
+	private String subjectActive;
+	private String insectNum;
+	private String subjectStatus;
+	private String subjectNum;
+	private String subjectName;
+	private String pestInfestationLevel;
+	private String pestExistencePosition;
+	private String subjectNote;
+	private String distFromroad;
+	private String roadType;
+	
+	private String researchStatusName;
+	private String participatedResearchId;
+	private String rejectReason;
+	private String researchSubmissionDate;
+	private String researchStatusCode;
+	
+	private String subjectWeatherCode;
+	private String plantInarea;
+	private String regDate;
+	private String korSpecificName;
+	
+	private String researchTaskId;
+}

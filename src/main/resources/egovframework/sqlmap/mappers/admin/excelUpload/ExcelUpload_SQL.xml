@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.admin.excelUpload.service.impl.ExcelUploadMapper">
+	
+	<resultMap id="SubVoMap" type="SubVo">
+		<result property="taskName" 							column="TASK_NAME"/>
+		<result property="researchTaskName" 					column="RESEARCH_TASK_NAME"/>
+		<result property="subDate" 								column="SUB_DATE"/>
+		<result property="subStartTime" 						column="SUB_START_TIME"/>
+		<result property="subEndTime" 							column="SUB_END_TIME"/>
+		<result property="subResearchGroup" 					column="SUB_RESEARCH_GROUP"/>
+		<result property="subResearchMembers" 					column="SUB_RESEARCH_MEMBERS"/>
+		<result property="subWeather" 							column="SUB_WEATHER"/>
+		<result property="subTemperature" 						column="SUB_TEMPERATURE"/>
+		<result property="subResearchLocation" 					column="SUB_RESEARCH_LOCATION"/>
+		<result property="subGpsN" 								column="SUB_GPS_N"/>
+		<result property="subGpsE" 								column="SUB_GPS_E"/>
+		<result property="subAltitude" 							column="SUB_ALTITUDE"/>
+		<result property="subLocationCategory" 					column="SUB_LOCATION_CATEGORY"/>
+		<result property="subOccurrenceStatus" 					column="SUB_OCCURRENCE_STATUS"/>
+		<result property="subInsectName" 						column="SUB_INSECT_NAME"/>
+		<result property="subInsectStatus" 						column="SUB_INSECT_STATUS"/>
+		<result property="subNum" 								column="SUB_NUM"/>
+		<result property="subPlantName" 						column="SUB_PLANT_NAME"/>
+		<result property="subOccurrenceDegree" 					column="SUB_OCCURRENCE_DEGREE"/>
+		<result property="subOccurrenceLocationInPlant" 		column="SUB_OCCURRENCE_LOCATION_IN_PLANT"/>
+		<result property="subEtcPlant" 							column="SUB_ETC_PLANT"/>
+		<result property="subEtcLocation" 						column="SUB_ETC_LOCATION"/>
+		<result property="subDistanceFromRoad" 					column="SUB_DISTANCE_FROM_ROAD"/>
+		<result property="subRoadCategory" 						column="SUB_ROAD_CATEGORY"/>
+	</resultMap>
+	
+	<insert id="insertSubVo" parameterType="SubVo">
+		INSERT INTO
+			SUB_TB 
+			(
+				TASK_NAME
+				, RESEARCH_TASK_NAME
+				, SUB_DATE
+				, SUB_START_TIME
+				, SUB_END_TIME
+				, SUB_RESEARCH_GROUP
+				, SUB_RESEARCH_MEMBERS
+				, SUB_WEATHER
+				, SUB_TEMPERATURE
+				, SUB_RESEARCH_LOCATION
+				, SUB_GPS_N
+				, SUB_GPS_E
+				, SUB_ALTITUDE
+				, SUB_LOCATION_CATEGORY
+				, SUB_OCCURRENCE_STATUS
+				, SUB_INSECT_NAME
+				, SUB_INSECT_STATUS
+				, SUB_NUM
+				, SUB_PLANT_NAME
+				, SUB_OCCURRENCE_DEGREE
+				, SUB_OCCURRENCE_LOCATION_IN_PLANT
+				, SUB_ETC_PLANT
+				, SUB_ETC_LOCATION
+				, SUB_DISTANCE_FROM_ROAD
+				, SUB_ROAD_CATEGORY
+			) 
+			VALUES 
+			(
+				#{taskName}
+				, #{researchTaskName}
+				<choose>
+					<when test="subDate.matches('.*월.*')">
+						, STR_TO_DATE(SUBSTRING(#{subDate}, 5), '%c월 %e, %Y')
+					</when>
+					<otherwise>
+						, #{subDate}
+					</otherwise>
+				</choose>
+				, #{subStartTime}
+				, #{subEndTime}
+				, #{subResearchGroup}
+				, #{subResearchMembers}
+				, #{subWeather}
+				, #{subTemperature}
+				, #{subResearchLocation}
+				, #{subGpsN}
+				, #{subGpsE}
+				, #{subAltitude}
+				, #{subLocationCategory}
+				, #{subOccurrenceStatus}
+				, #{subInsectName}
+				, #{subInsectStatus}
+				, #{subNum}
+				, #{subPlantName}
+				, #{subOccurrenceDegree}
+				, #{subOccurrenceLocationInPlant}
+				, #{subEtcPlant}
+				, #{subEtcLocation}
+				, #{subDistanceFromRoad}
+				, #{subRoadCategory}
+			)
+	</insert>
+	
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.general.insectDistribution.service.impl.InsectDistributionMapper">
+	
+	<select id="getDistributionVo" parameterType="PagingVo" resultType="InsectDistributionVo">
+		SELECT 
+			SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '경기도|서울|인천' THEN 1 ELSE 0 END) AS ggd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '강원도|강원' THEN 1 ELSE 0 END) AS gwd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '충청남도|충남|대전|세종' THEN 1 ELSE 0 END) AS cnd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '충청북도|충북' THEN 1 ELSE 0 END) AS cbd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '경상북도|경북|대구' THEN 1 ELSE 0 END) AS gbd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '경상남도|경남|부산|울산' THEN 1 ELSE 0 END) AS gnd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '전라북도|전북' THEN 1 ELSE 0 END) AS jbd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '전라남도|전남|광주' THEN 1 ELSE 0 END) AS jnd
+			, SUM(CASE WHEN SUBSTRING_INDEX(SUB_RESEARCH_LOCATION, ' ', 1) REGEXP '제주|서귀포' THEN 1 ELSE 0 END) AS jjd
+		FROM 
+			SUB_TB
+		<where>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND SUB_DATE >= (SELECT DATE_SUB(NOW(), INTERVAL #{dateStar} MONTH))
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND SUB_INSECT_NAME = #{searchKeyword}
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+</mapper>

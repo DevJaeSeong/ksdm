@@ -1,0 +1,65 @@
+package egovframework.ksdmWeb.general.main.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DeviceUtils;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class MainController {
+
+	@GetMapping("/main.do")
+	public String main(HttpServletRequest request) {
+		log.debug("/main.do");
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Device device = DeviceUtils.getCurrentDevice(request);
+		
+		if (!device.isNormal()) {
+			log.debug("sessionId: {}, 이 세션은 모바일, 테블릿 환경에서 접속되었습니다.", request.getSession().getId());
+			
+			if (authentication == null) 
+				log.debug("사용자 인증이 되어있지 않습니다.");
+			else if (authentication instanceof AnonymousAuthenticationToken) 
+				log.debug("로그인하지 않은 사용자입니다.");
+			else 
+				return "redirect:user/mainPage.do";
+			
+			return "redirect:loginPage.do";
+		}
+		
+		return "redirect:/mainPage.do";
+	}
+	
+	@GetMapping("/invalidatedSession.do")
+	public String invalidatedSession(HttpSession session) {
+		
+		log.debug("sessionId: {}, 이 세션은 만료되었거나 인증되지 않았습니다.", session.getId());
+		
+		return "redirect:/main.do";
+	}
+	
+	@GetMapping("/expiredSession.do")
+	public String expiredSession(HttpSession session) {
+		
+		log.debug("sessionId: {}, 이 세션은 무효화된 세션입니다.", session.getId());
+		
+		return "redirect:/main.do";
+	}
+	
+	@GetMapping("/mainPage.do")
+	public String mainPage() {
+		log.debug("/mainPage.do");
+		
+		return "general/main/mainPage";
+	}
+}

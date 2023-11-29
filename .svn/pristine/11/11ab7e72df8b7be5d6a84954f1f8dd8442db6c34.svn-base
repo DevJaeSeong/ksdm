@@ -1,0 +1,13 @@
+package egovframework.ksdmWeb.security;
+
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("securityMapper")
+public interface SecurityMapper {
+
+	public UserVo getUserById(String userId) throws Exception;
+	public UserDetailVo getUserDetailById(String userId) throws Exception;
+	public int updatePassword(UserVo userVo) throws Exception;
+	public int getUserCountById(String userId) throws Exception;
+	public boolean insertUser(UserDetailVo userDetailVo) throws Exception;
+}

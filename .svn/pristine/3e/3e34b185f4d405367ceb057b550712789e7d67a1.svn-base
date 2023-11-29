@@ -1,0 +1,11 @@
+package egovframework.ksdmWeb.common.vo;
+
+import lombok.Data;
+
+@Data
+public class FileVo {
+
+	private String oriFileName;
+	private String savedFileName;
+	private String filePath;
+}

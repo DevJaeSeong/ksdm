@@ -1,0 +1,21 @@
+package egovframework.ksdmWeb.admin.adminInsectInfo.service;
+
+import lombok.Data;
+
+@Data
+public class AdminInsectInfoVo {
+
+	private String insectNum;
+	private String korSpecificName;
+	private String engSpecificName;
+	private String taxon;
+	private String oriImgName;
+	private String saveImgName;
+	private String firstDiscoveryDate;
+	private String firstDiscoveryPlace;
+	private String inflowPath;
+	private String description;
+	private String regId;
+	private String regDate;
+	private String userName;
+}

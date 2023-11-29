@@ -1,0 +1,18 @@
+package egovframework.ksdmWeb.security;
+
+import lombok.Data;
+
+/**
+ * 이 클래스는 사용자 인증시 필요한 유저 정보를 가지고 있는 Vo입니다.
+ */
+@Data
+public class UserVo {
+	
+	private String userId;
+	private String userPw;
+	private int authorityId;
+	private boolean isAccountNonExpired;
+	private boolean isAccountNonLocked;
+	private boolean isCredentialsNonExpired;
+	private boolean isEnabled;
+}

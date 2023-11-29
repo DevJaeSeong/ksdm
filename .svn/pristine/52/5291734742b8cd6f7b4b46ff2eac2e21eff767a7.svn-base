@@ -1,0 +1,53 @@
+package egovframework.ksdmWeb.general.insectDistribution.web;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.general.insectDistribution.service.InsectDistributionService;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class InsectDistributionController {
+
+	@Resource(name = "insectDistributionService")
+	private InsectDistributionService insectDistributionService;
+	
+	/**
+	 * 조사통계 화면.
+	 */
+	@GetMapping("/researchStatisticsPage.do")
+	public String researchStatisticsPage() {
+		log.debug("/researchStatisticsPage.do");
+		
+		return "/general/insectDistribution/researchStatisticsPage";
+	}
+	
+	/**
+	 * 현재분포 화면.
+	 */
+	@GetMapping("/currentDistributionPage.do")
+	public String currentDistributionPage() {
+		log.debug("/currentDistributionPage.do");
+		
+		return "/general/insectDistribution/currentDistributionPage";
+	}
+	
+	@GetMapping("/getDistributionData.do")
+	@ResponseBody
+	public Map<String, Object> getDistributionData(@ModelAttribute PagingVo pagingVo) {
+		log.debug("<== {}", pagingVo);
+		
+		Map<String, Object> data = insectDistributionService.getDistributionData(pagingVo);
+		
+		log.debug("==> {}", data);
+		return data;
+	}
+}

@@ -1,0 +1,15 @@
+package egovframework.ksdmWeb.admin.researchData.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+
+public interface ResearchDataService {
+
+	public List<ResearchDataVo> getAllSubjectList();
+	public Map<String, Object> getResearchData(PagingVo pagingVo);
+	public Map<String, Object> uploadResearchData(MultipartFile file);
+}

@@ -1,0 +1,13 @@
+package egovframework.ksdmWeb.admin.adminInsectInfo.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.ksdmWeb.common.vo.InsectVo;
+
+public interface AdminInsectInfoService {
+
+	public Map<String, Object> insectRegistConfirm(InsectVo insectVo, List<String> insectStatusList);
+	public Map<String, Object> insectModifyConfirm(InsectVo insectVo, List<String> insectStatusList);
+	public Map<String, Object> deleteInsectByInsectNum(String insectNum);
+}

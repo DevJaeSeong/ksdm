@@ -1,0 +1,175 @@
+package egovframework.ksdmWeb.admin.userManagement.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Service;
+
+import egovframework.ksdmWeb.admin.userManagement.service.AuthorityVo;
+import egovframework.ksdmWeb.admin.userManagement.service.ResearchAreaVo;
+import egovframework.ksdmWeb.admin.userManagement.service.UserManagementService;
+import egovframework.ksdmWeb.common.paging.PagingMaker;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.security.UserAuthenticator;
+import egovframework.ksdmWeb.security.UserDetailVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("userManagementService")
+@Slf4j
+public class UserManagementServiceImpl implements UserManagementService {
+
+	@Resource(name = "userManagementMapper")
+	private UserManagementMapper userManagementMapper;
+	
+	@Resource(name = "pagingMaker")
+	private PagingMaker pagingMaker;
+
+	@Resource(name = "userAuthenticator")
+	private UserAuthenticator userAuthenticator;
+	
+	@Override
+	public Map<String, Object> getUserList(PagingVo pagingVo) {
+		log.debug("getUserList() 시작");
+		
+		Map<String, Object> map = null;
+		
+		try {
+			
+			map = pagingMaker.pagingMake(pagingVo, userManagementMapper.getUserListTotalCount(pagingVo));
+			List<UserDetailVo> userDetailVos = userManagementMapper.getUserList((PagingVo) map.get("pagingVo"));
+			map.put("userDetailVos", userDetailVos);
+			map.remove("pagingVo");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+			log.debug("getUserList() 끝");
+			return null;
+		}
+		
+		log.debug("getUserList() 끝");
+		return map;
+	}
+
+	@Override
+	public List<AuthorityVo> getAllAuthorityList() {
+		log.debug("getAllAuthorityList() 시작");
+
+		List<AuthorityVo> authorityVos = null;
+		
+		try {
+			
+			authorityVos = userManagementMapper.getAllAuthorityList();
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getAllAuthorityList() 끝");
+		return authorityVos;
+	}
+
+	@Override
+	public List<ResearchAreaVo> getAllResearchAreaList() {
+		log.debug("getAllResearchAreaList() 시작");
+
+		List<ResearchAreaVo> researchAreaVos = null;
+		
+		try {
+			
+			researchAreaVos = userManagementMapper.getAllResearchAreaList();
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getAllResearchAreaList() 끝");
+		return researchAreaVos;
+	}
+
+	@Override
+	public Map<String, Object> checkId(String checkId) {
+		log.debug("checkId() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		if (userAuthenticator.isExistAccount(checkId) > 0)
+			result.put("result", "exists");
+		else
+			result.put("result", "not_exists");
+		
+		log.debug("checkId() 끝");
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> registUser(UserDetailVo userDetailVo) {
+		log.debug("registUser() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		userDetailVo.setRegId(user.getUsername());
+		
+		if (userAuthenticator.registUser(userDetailVo))
+			result.put("result", "success");
+		else
+			result.put("result", "fail");
+		
+		log.debug("registUser() 끝");
+		return result;
+	}
+
+	@Override
+	public UserDetailVo getUserDetailById(String userId) {
+		log.debug("getUserDetailById() 시작");
+		
+		UserDetailVo userDetailVo = null;
+		
+		try {
+			
+			userDetailVo = userManagementMapper.getUserDetailById(userId);
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getUserDetailById() 끝");
+		return userDetailVo;
+	}
+
+	@Override
+	public Map<String, Object> userModify(UserDetailVo userDetailVo) {
+		log.debug("userModify() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			userDetailVo.setModId(SecurityContextHolder.getContext().getAuthentication().getName());
+			userManagementMapper.updateUserDetail(userDetailVo);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+			
+			log.error("DB에러");
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		
+		log.debug("userModify() 끝");
+		return result;
+	}
+}

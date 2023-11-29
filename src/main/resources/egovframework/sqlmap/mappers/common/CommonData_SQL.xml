@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.common.service.impl.CommonDataMapper">
+	
+	<resultMap id="InsectVoMap" type="InsectVo">
+		<result property="insectNum" 				column="INSECT_NUM"/>
+		<result property="korSpecificName" 			column="KOR_SPECIFIC_NAME"/>
+		<result property="engSpecificName" 			column="ENG_SPECIFIC_NAME"/>
+		<result property="taxon" 					column="TAXON"/>
+		<result property="oriFileName" 				column="ORI_FILE_NAME"/>
+		<result property="savedFileName" 			column="SAVED_FILE_NAME"/>
+		<result property="filePath" 				column="FILE_PATH"/>
+		<result property="firstDiscoveryDate" 		column="FIRST_DISCOVERY_DATE"/>
+		<result property="firstDiscoveryPlace" 		column="FIRST_DISCOVERY_PLACE"/>
+		<result property="inflowPath" 				column="INFLOW_PATH"/>
+		<result property="description" 				column="DESCRIPTION"/>
+		<result property="regId" 					column="REG_ID"/>
+		<result property="regDate" 					column="REG_DATE"/>
+		<result property="views" 					column="VIEWS"/>
+	</resultMap>
+	
+	<resultMap id="InsectStatusVoMap" type="InsectStatusVo">
+		<result property="insectStatusCode" 		column="INSECT_STATUS_CODE"/>
+		<result property="insectStatusName" 		column="INSECT_STATUS_NAME"/>
+	</resultMap>
+	
+	<resultMap id="BoardVoMap" type="BoardVo">
+		<result property="boardNum" 				column="BOARD_NUM"/>
+		<result property="boardDiv" 				column="BOARD_DIV"/>
+		<result property="boardSubject" 			column="BOARD_SUBJECT"/>
+		<result property="boardContents" 			column="BOARD_CONTENTS"/>
+		<result property="regId" 					column="REG_ID"/>
+		<result property="regNm" 					column="REG_NM"/>
+		<result property="regDate" 					column="REG_DATE"/>
+		<result property="modifyId" 				column="MODIFY_ID"/>
+		<result property="modifyDate" 				column="MODIFY_DATE"/>
+		<result property="attachement" 				column="ATTACHEMENT"/>
+		<result property="attachFilenm" 			column="ATTACH_FILENM"/>
+		<result property="views" 					column="VIEWS"/>
+	</resultMap>
+	
+	<resultMap id="SubVoMap" type="SubVo">
+		<result property="subId" 								column="SUB_ID"/>
+		<result property="taskName" 							column="TASK_NAME"/>
+		<result property="researchTaskName" 					column="RESEARCH_TASK_NAME"/>
+		<result property="subDate" 								column="SUB_DATE"/>
+		<result property="subStartTime" 						column="SUB_START_TIME"/>
+		<result property="subEndTime" 							column="SUB_END_TIME"/>
+		<result property="subResearchGroup" 					column="SUB_RESEARCH_GROUP"/>
+		<result property="subResearchMembers" 					column="SUB_RESEARCH_MEMBERS"/>
+		<result property="subWeather" 							column="SUB_WEATHER"/>
+		<result property="subTemperature" 						column="SUB_TEMPERATURE"/>
+		<result property="subResearchLocation" 					column="SUB_RESEARCH_LOCATION"/>
+		<result property="subGpsN" 								column="SUB_GPS_N"/>
+		<result property="subGpsE" 								column="SUB_GPS_E"/>
+		<result property="subAltitude" 							column="SUB_ALTITUDE"/>
+		<result property="subLocationCategory" 					column="SUB_LOCATION_CATEGORY"/>
+		<result property="subOccurrenceStatus" 					column="SUB_OCCURRENCE_STATUS"/>
+		<result property="subInsectName" 						column="SUB_INSECT_NAME"/>
+		<result property="subInsectStatus" 						column="SUB_INSECT_STATUS"/>
+		<result property="subNum" 								column="SUB_NUM"/>
+		<result property="subPlantName" 						column="SUB_PLANT_NAME"/>
+		<result property="subOccurrenceDegree" 					column="SUB_OCCURRENCE_DEGREE"/>
+		<result property="subOccurrenceLocationInPlant" 		column="SUB_OCCURRENCE_LOCATION_IN_PLANT"/>
+		<result property="subEtcPlant" 							column="SUB_ETC_PLANT"/>
+		<result property="subEtcLocation" 						column="SUB_ETC_LOCATION"/>
+		<result property="subDistanceFromRoad" 					column="SUB_DISTANCE_FROM_ROAD"/>
+		<result property="subRoadCategory" 						column="SUB_ROAD_CATEGORY"/>
+		<result property="participatedResearchId" 				column="PARTICIPATED_RESEARCH_ID"/>
+	</resultMap>
+	
+	<resultMap id="TaskVoMap" type="TaskVo">
+		<result property="taskId"		column="TASK_ID"/>
+		<result property="taskName" 	column="TASK_NAME"/>
+	</resultMap>
+	
+	<resultMap id="ForecastVoMap" type="ForecastVo">
+		<result property="forecastId"				column="FORECAST_ID"/>
+		<result property="forecastName"				column="FORECAST_NAME"/>
+		<result property="forecastInsect"			column="FORECAST_INSECT"/>
+		<result property="pngFileName" 				column="PNG_FILE_NAME"/>
+		<result property="pdfFileName" 				column="TIF_FILE_NAME"/>
+		<result property="tifFileName" 				column="PDF_FILE_NAME"/>
+		<result property="jpgFileName" 				column="JPG_FILE_NAME"/>
+		<result property="programFileName" 			column="PROGRAM_FILE_NAME"/>
+		<result property="menualFileName" 			column="MENUAL_FILE_NAME"/>
+		<result property="pngOriFileName" 			column="PNG_ORI_FILE_NAME"/>
+		<result property="pdfOriFileName" 			column="TIF_ORI_FILE_NAME"/>
+		<result property="tifOriFileName" 			column="PDF_ORI_FILE_NAME"/>
+		<result property="jpgOriFileName" 			column="JPG_ORI_FILE_NAME"/>
+		<result property="programOriFileName" 		column="PROGRAM_ORI_FILE_NAME"/>
+		<result property="menualOriFileName" 		column="MENUAL_ORI_FILE_NAME"/>
+		<result property="regDate" 					column="REG_DATE"/>
+		<result property="regId" 					column="REG_ID"/>
+		<result property="regNm" 					column="REG_NM"/>
+		<result property="views" 					column="VIEWS"/>
+	</resultMap>
+	
+	<resultMap id="UserInsectVoMap" type="UserInsectVo">
+	        <result property="korSpecificName" 					column="KOR_SPECIFIC_NAME"/>
+	        <result property="insectNum" 						column="INSECT_NUM"/>
+	</resultMap>
+	
+	<select id="getInsectList" parameterType="PagingVo" resultMap="InsectVoMap">
+		SELECT
+		    INSECT_NUM
+		    , KOR_SPECIFIC_NAME
+		    , ENG_SPECIFIC_NAME
+		    , TAXON
+		    , (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB AS F WHERE T.SAVED_FILE_NAME = F.SAVED_FILE_NAME) ORI_FILE_NAME
+		    , SAVED_FILE_NAME
+		    , FIRST_DISCOVERY_DATE
+		    , FIRST_DISCOVERY_PLACE
+		    , INFLOW_PATH
+		    , DESCRIPTION
+		    , REG_ID
+		    , REG_DATE
+		    , VIEWS
+		FROM
+		    EXOTIC_INSECTS_INFO_TB AS T
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND KOR_SPECIFIC_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+		<choose>
+			<when test="sort != null and sort != '' and sort == 'latestReg'">
+				ORDER BY REG_DATE DESC
+			</when>
+			<when test="sort != null and sort != '' and sort == 'highView'">
+				ORDER BY VIEWS DESC
+			</when>
+			<when test="sort != null and sort != '' and sort == 'logView'">
+				ORDER BY VIEWS ASC
+			</when>
+		</choose>
+		LIMIT #{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="getInsectListTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM 
+		    EXOTIC_INSECTS_INFO_TB
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND KOR_SPECIFIC_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="getInsectByinsectNum" parameterType="String" resultMap="InsectVoMap">
+		SELECT
+		    INSECT_NUM
+		    , KOR_SPECIFIC_NAME
+		    , ENG_SPECIFIC_NAME
+		    , TAXON
+		    , (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB AS F WHERE T.SAVED_FILE_NAME = F.SAVED_FILE_NAME) ORI_FILE_NAME
+		    , SAVED_FILE_NAME
+		    , (SELECT FILE_PATH FROM KSDM_FILE_TB AS F WHERE T.SAVED_FILE_NAME = F.SAVED_FILE_NAME) FILE_PATH
+		    , FIRST_DISCOVERY_DATE
+		    , FIRST_DISCOVERY_PLACE
+		    , INFLOW_PATH
+		    , DESCRIPTION
+		    , REG_ID
+		    , REG_DATE
+		    , VIEWS
+		FROM
+		    EXOTIC_INSECTS_INFO_TB AS T
+		WHERE
+			INSECT_NUM = #{insectNum}
+	</select>
+	
+	<select id="getInsectStatusByinsectNum" parameterType="String" resultMap="InsectStatusVoMap">
+		SELECT 
+		    S.INSECT_STATUS_CODE AS INSECT_STATUS_CODE
+			, C.INSECT_STATUS_NAME AS INSECT_STATUS_NAME
+		FROM 
+		    INSECT_STATUS_TB AS S
+			JOIN INSECT_STATUS_CODE_TB AS C ON S.INSECT_STATUS_CODE = C.INSECT_STATUS_CODE
+		WHERE
+			S.INSECT_NUM = #{insectNum}
+	</select>
+	
+	<select id="getBoardListTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT 
+		    COUNT(*)
+		FROM 
+		    BOARD_TB
+		<where>
+			<choose>
+				<when test="boardDiv == '1000'">
+					AND BOARD_DIV = 1000
+				</when>
+				<when test="boardDiv == '2000'">
+					AND BOARD_DIV = 2000
+				</when>
+				<when test="boardDiv == '3000'">
+					AND BOARD_DIV = 3000
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND BOARD_SUBJECT LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="getBoardList" parameterType="PagingVo" resultMap="BoardVoMap">
+		SELECT 
+		    B.BOARD_NUM AS BOARD_NUM
+		    , B.BOARD_DIV AS BOARD_DIV
+		    , B.BOARD_SUBJECT AS BOARD_SUBJECT
+		    , B.BOARD_CONTENTS AS BOARD_CONTENTS
+		    , B.REG_ID AS REG_ID
+		    , U.USER_NAME AS REG_NM
+		    , DATE_FORMAT(B.REG_DATE, '%Y-%m-%d') AS REG_DATE
+		    , B.MODIFY_ID AS MODIFY_ID
+		    , DATE_FORMAT(B.MODIFY_DATE, '%Y-%m-%d') AS MODIFY_DATE
+		    , F.ORI_FILE_NAME AS ATTACHEMENT
+		    , B.ATTACH_FILENM AS ATTACH_FILENM
+		    , B.VIEWS AS VIEWS
+		FROM 
+		    BOARD_TB AS B
+	    LEFT JOIN
+	    	USER_INFO_TB AS U ON B.REG_ID = U.USER_ID
+	    LEFT JOIN 
+	    	KSDM_FILE_TB AS F ON B.ATTACH_FILENM = F.SAVED_FILE_NAME
+		<where>
+			<choose>
+				<when test="boardDiv == '1000'">
+					AND B.BOARD_DIV = 1000
+				</when>
+				<when test="boardDiv == '2000'">
+					AND B.BOARD_DIV = 2000
+				</when>
+				<when test="boardDiv == '3000'">
+					AND B.BOARD_DIV = 3000
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND B.BOARD_SUBJECT LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+		<choose>
+			<when test="sort != null and sort != '' and sort == 'latestReg'">
+				ORDER BY REG_DATE DESC
+			</when>
+			<when test="sort != null and sort != '' and sort == 'highView'">
+				ORDER BY VIEWS DESC
+			</when>
+			<when test="sort != null and sort != '' and sort == 'logView'">
+				ORDER BY VIEWS ASC
+			</when>
+		</choose>
+		LIMIT #{firstIndex}, #{pageUnit}
+	</select>
+	
+	<select id="getBoardByBoardNum" parameterType="String" resultMap="BoardVoMap">
+		SELECT 
+		    B.BOARD_NUM AS BOARD_NUM
+		    , B.BOARD_DIV AS BOARD_DIV
+		    , B.BOARD_SUBJECT AS BOARD_SUBJECT
+		    , B.BOARD_CONTENTS AS BOARD_CONTENTS
+		    , B.REG_ID AS REG_ID
+		    , U.USER_NAME AS REG_NM
+		    , DATE_FORMAT(B.REG_DATE, '%Y-%m-%d') AS REG_DATE
+		    , B.MODIFY_ID AS MODIFY_ID
+		    , DATE_FORMAT(B.MODIFY_DATE, '%Y-%m-%d') AS MODIFY_DATE
+		    , F.ORI_FILE_NAME AS ATTACHEMENT
+		    , B.ATTACH_FILENM AS ATTACH_FILENM
+		    , B.VIEWS AS VIEWS
+		FROM 
+		    BOARD_TB AS B
+	    LEFT JOIN
+	    	USER_INFO_TB AS U ON B.REG_ID = U.USER_ID
+	    LEFT JOIN 
+	    	KSDM_FILE_TB AS F ON B.ATTACH_FILENM = F.SAVED_FILE_NAME
+		WHERE
+			B.BOARD_NUM = #{boardNum}
+	</select>
+	
+	<select id="selectTaskList" resultMap="TaskVoMap">
+		SELECT 
+			TASK_ID, 
+			TASK_NAME
+		FROM
+			TASK_TB
+	</select>
+	
+	<select id="getSubVoListTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			SUB_TB
+		<where>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND SUB_DATE >= #{dateStar}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateEnd != null and dateEnd != ''">
+					<![CDATA[AND SUB_DATE <= #{dateEnd}]]>
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != '' and searchColumn != null and searchColumn != ''">
+					AND ${searchColumn} LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="getSubVoList" parameterType="PagingVo" resultMap="SubVoMap">
+		SELECT
+			SUB_ID
+			, TASK_NAME
+			, RESEARCH_TASK_NAME
+			, SUB_DATE
+			, SUB_START_TIME
+			, SUB_END_TIME
+			, SUB_RESEARCH_GROUP
+			, SUB_RESEARCH_MEMBERS
+			, SUB_WEATHER
+			, SUB_TEMPERATURE
+			, SUB_RESEARCH_LOCATION
+			, SUB_GPS_N
+			, SUB_GPS_E
+			, SUB_ALTITUDE
+			, SUB_LOCATION_CATEGORY
+			, SUB_OCCURRENCE_STATUS
+			, SUB_INSECT_NAME
+			, SUB_INSECT_STATUS
+			, SUB_NUM
+			, SUB_PLANT_NAME
+			, SUB_OCCURRENCE_DEGREE
+			, SUB_OCCURRENCE_LOCATION_IN_PLANT
+			, SUB_ETC_PLANT
+			, SUB_ETC_LOCATION
+			, SUB_DISTANCE_FROM_ROAD
+			, SUB_ROAD_CATEGORY
+			, PARTICIPATED_RESEARCH_ID
+		FROM
+			SUB_TB
+		<where>
+			<choose>
+				<when test="participatedResearchId != null and participatedResearchId != ''">
+					AND PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND SUB_DATE >= #{dateStar}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateEnd != null and dateEnd != ''">
+					<![CDATA[AND SUB_DATE <= #{dateEnd}]]>
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != '' and searchColumn != null and searchColumn != ''">
+					AND ${searchColumn} LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+		ORDER BY
+			SUB_ID DESC
+		<choose>
+			<when test="pageIndex > 0">
+				LIMIT #{firstIndex}, #{pageUnit}
+			</when>
+		</choose>
+	</select>
+	
+	<select id="getSubWaitListTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			SUB_WAIT_TB
+		<where>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND SUB_DATE >= #{dateStar}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateEnd != null and dateEnd != ''">
+					<![CDATA[AND SUB_DATE <= #{dateEnd}]]>
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND SUB_RESEARCH_GROUP LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+		
+	<select id="getSubWaitList" parameterType="PagingVo" resultMap="SubVoMap">
+		SELECT
+			TASK_NAME
+			, RESEARCH_TASK_NAME
+			, SUB_DATE
+			, SUB_START_TIME
+			, SUB_END_TIME
+			, SUB_RESEARCH_GROUP
+			, SUB_RESEARCH_MEMBERS
+			, SUB_WEATHER
+			, SUB_TEMPERATURE
+			, SUB_RESEARCH_LOCATION
+			, SUB_GPS_N
+			, SUB_GPS_E
+			, SUB_ALTITUDE
+			, SUB_LOCATION_CATEGORY
+			, SUB_OCCURRENCE_STATUS
+			, SUB_INSECT_NAME
+			, SUB_INSECT_STATUS
+			, SUB_NUM
+			, SUB_PLANT_NAME
+			, SUB_OCCURRENCE_DEGREE
+			, SUB_OCCURRENCE_LOCATION_IN_PLANT
+			, SUB_ETC_PLANT
+			, SUB_ETC_LOCATION
+			, SUB_DISTANCE_FROM_ROAD
+			, SUB_ROAD_CATEGORY
+			, PARTICIPATED_RESEARCH_ID
+		FROM
+			SUB_WAIT_TB
+		<where>
+			<choose>
+				<when test="participatedResearchId != null and participatedResearchId != ''">
+					AND PARTICIPATED_RESEARCH_ID = #{participatedResearchId}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateStar != null and dateStar != ''">
+					AND SUB_DATE >= #{dateStar}
+				</when>
+			</choose>
+			<choose>
+				<when test="dateEnd != null and dateEnd != ''">
+					<![CDATA[AND SUB_DATE <= #{dateEnd}]]>
+				</when>
+			</choose>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND SUB_RESEARCH_GROUP LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+		<choose>
+			<when test="pageIndex > 0">
+				LIMIT #{firstIndex}, #{pageUnit}
+			</when>
+		</choose>
+	</select>
+	
+	<select id="getAllTaskList" resultMap="TaskVoMap">
+		SELECT
+			TASK_ID
+			, TASK_NAME
+		FROM
+			TASK_TB
+	</select>
+	
+	<select id="getForecastListTotalCount" parameterType="PagingVo" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			FORECAST_TB
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND (FORECAST_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+						 OR FORECAST_INSECT LIKE CONCAT('%', #{searchKeyword}, '%'))
+				</when>
+			</choose>
+		</where>
+	</select>
+	
+	<select id="getForecastList" parameterType="PagingVo" resultMap="ForecastVoMap">
+		SELECT 
+			FORECAST_TB.FORECAST_ID AS FORECAST_ID
+			, FORECAST_TB.FORECAST_NAME AS FORECAST_NAME
+			, FORECAST_TB.FORECAST_INSECT AS FORECAST_INSECT
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = PNG_FILE_NAME) AS PNG_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = TIF_FILE_NAME) AS TIF_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = PDF_FILE_NAME) AS PDF_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = JPG_FILE_NAME) AS JPG_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = PROGRAM_FILE_NAME) AS PROGRAM_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = MENUAL_FILE_NAME) AS MENUAL_ORI_FILE_NAME
+			, FORECAST_TB.PNG_FILE_NAME AS PNG_FILE_NAME
+			, FORECAST_TB.TIF_FILE_NAME AS TIF_FILE_NAME
+			, FORECAST_TB.PDF_FILE_NAME AS PDF_FILE_NAME
+			, FORECAST_TB.JPG_FILE_NAME AS JPG_FILE_NAME
+			, FORECAST_TB.PROGRAM_FILE_NAME AS PROGRAM_FILE_NAME
+			, FORECAST_TB.MENUAL_FILE_NAME AS MENUAL_FILE_NAME
+			, FORECAST_TB.MENUAL_FILE_NAME AS MENUAL_FILE_NAME
+			, FORECAST_TB.MENUAL_FILE_NAME AS MENUAL_FILE_NAME
+			, DATE_FORMAT(FORECAST_TB.REG_DATE, '%Y-%m-%d') AS REG_DATE
+			, FORECAST_TB.REG_ID AS REG_ID
+			, U.USER_NAME AS REG_NM
+			, FORECAST_TB.VIEWS AS VIEWS
+		FROM 
+			FORECAST_TB
+		LEFT JOIN
+			USER_INFO_TB AS U ON FORECAST_TB.REG_ID = U.USER_ID
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND (FORECAST_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+						 OR FORECAST_INSECT LIKE CONCAT('%', #{searchKeyword}, '%'))
+				</when>
+			</choose>
+		</where>
+		<choose>
+			<when test="sort != null and sort != '' and sort == 'latestReg'">
+				ORDER BY REG_DATE DESC
+			</when>
+			<when test="sort != null and sort != '' and sort == 'highView'">
+				ORDER BY VIEWS DESC
+			</when>
+			<when test="sort != null and sort != '' and sort == 'logView'">
+				ORDER BY VIEWS ASC
+			</when>
+		</choose>
+		<if test="pageIndex > 0">
+			LIMIT #{firstIndex}, #{pageUnit}
+		</if>
+	</select>
+	
+	<select id="getForecastById" parameterType="String" resultMap="ForecastVoMap">
+		SELECT 
+			FORECAST_TB.FORECAST_ID AS FORECAST_ID
+			, FORECAST_TB.FORECAST_NAME AS FORECAST_NAME
+			, FORECAST_TB.FORECAST_INSECT AS FORECAST_INSECT
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = PNG_FILE_NAME) AS PNG_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = TIF_FILE_NAME) AS TIF_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = PDF_FILE_NAME) AS PDF_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = JPG_FILE_NAME) AS JPG_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = PROGRAM_FILE_NAME) AS PROGRAM_ORI_FILE_NAME
+			, (SELECT ORI_FILE_NAME FROM KSDM_FILE_TB WHERE SAVED_FILE_NAME = MENUAL_FILE_NAME) AS MENUAL_ORI_FILE_NAME
+			, FORECAST_TB.PNG_FILE_NAME AS PNG_FILE_NAME
+			, FORECAST_TB.TIF_FILE_NAME AS TIF_FILE_NAME
+			, FORECAST_TB.PDF_FILE_NAME AS PDF_FILE_NAME
+			, FORECAST_TB.JPG_FILE_NAME AS JPG_FILE_NAME
+			, FORECAST_TB.PROGRAM_FILE_NAME AS PROGRAM_FILE_NAME
+			, FORECAST_TB.MENUAL_FILE_NAME AS MENUAL_FILE_NAME
+			, FORECAST_TB.REG_DATE AS REG_DATE
+			, FORECAST_TB.REG_ID AS REG_ID
+			, U.USER_NAME AS REG_NM
+			, FORECAST_TB.VIEWS AS VIEWS
+		FROM 
+			FORECAST_TB
+		LEFT JOIN
+			USER_INFO_TB AS U ON FORECAST_TB.REG_ID = U.USER_ID
+		WHERE
+			FORECAST_TB.FORECAST_ID = #{forecastId}
+	</select>
+	
+	<select id="selectInsectList" resultMap="UserInsectVoMap"> 
+		SELECT 
+			INSECT_NUM,
+			KOR_SPECIFIC_NAME
+		FROM
+			EXOTIC_INSECTS_INFO_TB
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND KOR_SPECIFIC_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+		
+	<select id="selectInsectTotalCount" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM
+			EXOTIC_INSECTS_INFO_TB
+		<where>
+			<choose>
+				<when test="searchKeyword != null and searchKeyword != ''">
+					AND KOR_SPECIFIC_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+				</when>
+			</choose>
+		</where>
+	</select>
+</mapper>

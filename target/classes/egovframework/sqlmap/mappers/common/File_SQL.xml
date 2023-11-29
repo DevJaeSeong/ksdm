@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.common.util.fileUpload.FileMapper">
+	
+	<resultMap id="FileVoMap" type="FileVo">
+		<result property="oriFileName" 				column="ORI_FILE_NAME"/>
+		<result property="savedFileName" 			column="SAVED_FILE_NAME"/>
+		<result property="filePath" 				column="FILE_PATH"/>
+	</resultMap>
+	
+	<select id="getFilePath" parameterType="String" resultType="String">
+		SELECT
+			FILE_PATH
+		FROM
+			KSDM_FILE_TB
+		WHERE
+			SAVED_FILE_NAME = #{savedFileName}
+	</select>
+	
+	<delete id="deleteFileVoBySavedFileName" parameterType="String">
+		DELETE FROM
+			KSDM_FILE_TB
+		WHERE
+			SAVED_FILE_NAME = #{savedFileName}
+	</delete>
+	
+	<insert id="insertFileVo" parameterType="FileVo">
+		INSERT INTO
+			KSDM_FILE_TB
+			(
+				ORI_FILE_NAME
+				, SAVED_FILE_NAME
+				, FILE_PATH
+			)
+			VALUES
+			(
+				#{oriFileName}
+				, #{savedFileName}
+				, #{filePath}
+			)
+	</insert>
+	
+</mapper>

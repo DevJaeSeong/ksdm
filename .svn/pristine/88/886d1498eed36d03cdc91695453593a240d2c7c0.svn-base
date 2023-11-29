@@ -1,0 +1,58 @@
+package egovframework.ksdmWeb.user.main.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Service;
+
+import egovframework.ksdmWeb.security.UserAuthenticator;
+import egovframework.ksdmWeb.security.UserVo;
+import egovframework.ksdmWeb.user.main.service.UserMainService;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("userMainService")
+@Slf4j
+public class UserMainServiceImpl implements UserMainService {
+
+	@Resource(name = "userAuthenticator")
+	private UserAuthenticator userAuthenticator;
+
+	@Override
+	public Map<String, Object> changePassword(Map<String, String> reciveData) {
+		log.debug("changePassword() 시작");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		String originPassword = reciveData.get("originPassword");
+		String changePassword = reciveData.get("changePassword");
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		boolean isMatchedPassword = userAuthenticator.matchPassword(originPassword, user);
+		
+		if (!isMatchedPassword) {
+			
+			map.put("result", "not_matched");
+			log.debug("changePassword() 끝");
+			return map;
+		}
+		
+		UserVo userVo = new UserVo();
+		userVo.setUserId(user.getUsername());
+		userVo.setUserPw(changePassword);
+		
+		boolean isSuccessChangePassword = userAuthenticator.changePassword(userVo);
+		
+		if (isSuccessChangePassword)
+			map.put("result", "success");
+		else
+			map.put("result", "fail");
+		
+		log.debug("changePassword() 끝");
+		return map;
+	}
+	
+	
+}

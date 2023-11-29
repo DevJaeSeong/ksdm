@@ -1,0 +1,24 @@
+package egovframework.ksdmWeb.admin.taskAndResearch.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("taskAndResearchMapper")
+public interface TaskAndResearchMapper {
+	
+	void insertResearchTask(TaskAndResearchVo taskAndResearchVo);
+	List<TaskAndResearchVo> selectParticipatedResearchList(PagingVo pagingVo) throws Exception;
+	int selectParticipatedResearchTotalCount(PagingVo pagingVo) throws Exception;
+	public void updateResearchStatus(TaskAndResearchVo taskAndResearchVo) throws Exception;
+	int selectResearchTaskTotalCount(PagingVo pagingVo);
+	List<TaskAndResearchVo> selectResearchTaskList(PagingVo pagingVo);
+	TaskAndResearchVo selectResearchTask(TaskAndResearchVo taskAndResearchVo);
+	void updateResearchTask(TaskAndResearchVo taskAndResearchVo);
+	public void disableResearchTask(String researchTaskId) throws Exception;
+	public void insertSubVo(SubVo subVo) throws Exception;
+	public int deleteSubVo(int subId) throws Exception; 
+}

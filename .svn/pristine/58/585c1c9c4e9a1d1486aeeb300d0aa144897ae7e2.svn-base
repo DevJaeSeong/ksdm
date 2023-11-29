@@ -1,0 +1,10 @@
+package egovframework.ksdmWeb.admin.excelUpload.service.impl;
+
+import egovframework.ksdmWeb.common.vo.SubVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("excelUploadMapper")
+public interface ExcelUploadMapper {
+
+	public void insertSubVo(SubVo subVo) throws Exception;
+}

@@ -1,0 +1,87 @@
+package egovframework.ksdmWeb.security;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * {@link AuthenticationManager}가 인증을 위해 사용자 인증정보를 가져오는데 사용되는 {@link UserDetailsService}의 구현체
+ */
+@Service("customUserDetailsService")
+@Slf4j
+public class CustomUserDetailsService implements UserDetailsService {
+
+	@Resource(name = "securityMapper")
+	private SecurityMapper securityMapper;
+	
+	@Override
+	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+		log.debug("loadUserByUsername() 시작");
+		log.debug("<== {}", userId);
+		
+		try {
+			
+			UserVo userVo = securityMapper.getUserById(userId);
+			
+			if (userVo != null) {
+				
+				User user = new User(
+									 userVo.getUserId(), 
+									 userVo.getUserPw(), 
+									 userVo.isEnabled(), 
+									 userVo.isAccountNonExpired(), 
+									 userVo.isCredentialsNonExpired(), 
+									 userVo.isAccountNonLocked(), 
+									 getAuthorities(userVo.getAuthorityId())
+									);
+				
+				log.debug("==> {}", user.toString());
+				log.debug("loadUserByUsername() 끝");
+				return user;
+			}
+			
+		} catch (Exception e) {
+			
+			log.error("DB 에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("loadUserByUsername() 끝");
+		throw new UsernameNotFoundException(userId + " 를 DB에서 조회하지 못함");
+	}
+	
+	private Collection<? extends GrantedAuthority> getAuthorities(int AuthorityId) {
+
+		List<GrantedAuthority> authorities;
+		
+		switch (AuthorityId) {
+		
+			case 1:
+				authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+				break;
+	
+			case 2:
+				authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+				break;
+				
+			default:
+				authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+				break;
+		}
+		
+		return authorities;
+	}
+}

@@ -1,0 +1,24 @@
+package egovframework.ksdmWeb.security;
+
+import lombok.Data;
+
+/**
+ * 이 클래스는 사용자 세부정보를 가지고 있는 Vo입니다.
+ */
+@Data
+public class UserDetailVo {
+
+	private String userId;
+	private String userPw;
+	private String userName;
+	private String userPhone;
+	private String researchAreaCode;
+	private String researchAreaName;
+	private String userNote;
+	private String regId;
+	private String regDate;
+	private String authorityId;
+	private String authorityName;
+	private String modId;
+	private String modDate;
+}

@@ -1,0 +1,22 @@
+package egovframework.ksdmWeb.user.research.service;
+
+import java.util.Map;
+
+import org.springframework.ui.ModelMap;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.vo.SubVo;
+
+public interface ResearchService {
+	
+	Map<String, Object> getResearchList(PagingVo pagingVo) throws Exception;
+	void researchRegist(ResearchVo researchVo);
+	Map<String, Object> getParticipatedResearchList(PagingVo pagingVo);
+	Map<String, Object> getSubjectList(PagingVo pagingVo) throws Exception;
+	ModelMap getSubjectDefaultValue(PagingVo pagingVo, ModelMap model) throws Exception;
+	Map<String, Object> subjectRegistConfirm(SubVo subVo);
+	void getSubjectDetail(ResearchVo researchVo, ModelMap model);
+	Map<String, Object> subjectDelete(ResearchVo researchVo);
+	Map<String, Object> subjectModifyConfirm(SubVo subVo);
+	public Map<String, Object> updateResearchStatus(ResearchVo researchVo);
+}

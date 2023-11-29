@@ -1,0 +1,13 @@
+package egovframework.ksdmWeb.general.insectForecast.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.common.vo.InsectForecastVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("insectForecastMapper")
+public interface InsectForecastMapper {
+
+	List<InsectForecastVo> selectInsectImage(InsectForecastVo insectForecastVo);
+	public void updateViews(String taskId) throws Exception;
+}

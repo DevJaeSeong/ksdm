@@ -1,0 +1,11 @@
+package egovframework.ksdmWeb.admin.excelUpload.service;
+
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
+
+public interface ExcelUploadService {
+
+	public Map<String, Object> excelUpload(MultipartFile file);
+
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.admin.boardManagement.common.service.impl.AdminBoardMapper">
+	
+	<insert id="insertBoard" parameterType="BoardVo">
+		INSERT INTO
+			BOARD_TB
+			(
+				BOARD_DIV
+				, BOARD_SUBJECT
+				, BOARD_CONTENTS
+				, REG_ID
+				, ATTACH_FILENM
+			) 
+			VALUES 
+			(
+				#{boardDiv}
+				, #{boardSubject}
+				, #{boardContents}
+				, #{regId}
+				, #{attachFilenm}
+			)
+	</insert>
+	
+	<delete id="deleteBoard" parameterType="BoardVo">
+		DELETE FROM
+			BOARD_TB
+		WHERE 
+			BOARD_NUM = #{boardNum}
+	</delete>
+	
+	<update id="updateBoard" parameterType="BoardVo">
+		UPDATE
+			BOARD_TB
+		SET
+			BOARD_SUBJECT = #{boardSubject}
+			, BOARD_CONTENTS = #{boardContents}
+			, MODIFY_ID = #{modifyId}
+			, MODIFY_DATE = NOW()
+			, ATTACH_FILENM = #{attachFilenm}
+		WHERE
+			BOARD_NUM = #{boardNum}
+	</update>
+	
+</mapper>

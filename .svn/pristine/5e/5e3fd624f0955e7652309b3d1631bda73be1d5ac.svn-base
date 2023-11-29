@@ -1,0 +1,76 @@
+package egovframework.ksdmWeb.admin.forecast.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.admin.forecast.service.ForecastService;
+import egovframework.ksdmWeb.admin.forecast.vo.ForecastVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/admin/forecast")
+@Slf4j
+public class ForecastController {
+
+	@Resource(name = "forecastService")
+	private ForecastService forecastService;
+	
+	/**
+	 * 예상분포 > 예상분포 업로드
+	 */
+	@GetMapping("/forecastUploadPage.do")
+	public String forecastUploadPage() {
+		log.debug("/forecastUploadPage.do");
+		
+		return "admin/forecast/forecastUploadPage";
+	}
+	
+	/**
+	 * 예상분포 > 예상분포 업로드 > 글쓰기
+	 */
+	@GetMapping("/forecastUploadRegistPage.do")
+	public String forecastUploadRegistPage() {
+		log.debug("/forecastUploadRegistPage.do");
+		
+		return "admin/forecast/forecastUploadRegistPage";
+	}
+	
+	/**
+	 * 예상분포 파일 업로드
+	 */
+	@PostMapping("/uploadFiles.do")
+	@ResponseBody
+	public Object uploadFiles(@ModelAttribute ForecastVo forecastVo) {
+		log.debug("<== {}", forecastVo);
+		
+		Map<String, Object> result = forecastService.uploadFiles(forecastVo);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+	
+	/**
+	 * 예상분포 삭제
+	 */
+	@PostMapping("/deleteFiles.do")
+	@ResponseBody
+	public Object deleteFiles(@RequestBody Map<String, List<String>> reciveData) {
+		log.debug("<== taskId: {}", reciveData);
+		
+		List<String> taskIds = (List<String>) reciveData.get("taskIds");
+		Map<String, Object> result = forecastService.deleteFiles(taskIds);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+}

@@ -1,0 +1,24 @@
+package egovframework.ksdmWeb.admin.taskAndResearch.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.ui.ModelMap;
+
+import egovframework.ksdmWeb.common.paging.PagingVo;
+
+public interface TaskAndResearchService {
+
+	ModelMap getTaskList(ModelMap model) throws Exception;
+	void researchTaskRegistConfirm(List<TaskAndResearchVo> taskAndResearchVos);
+	Map<String, Object> getParticipatedResearchList(PagingVo pagingVo) throws Exception;
+	void getSubject(PagingVo pagingVo, ModelMap model);
+	Map<String, Object> getResearchTaskList(PagingVo pagingVo, ModelMap model) throws Exception;
+	void getResearchTask(TaskAndResearchVo taskAndResearchVo, ModelMap model) throws Exception;
+	void getSubListDataToExcel(PagingVo pagingVo, HttpServletResponse response);
+	public Map<String, Object> updateResearchStatus(TaskAndResearchVo taskAndResearchVo);
+	public Map<String, Object> researchTaskDeleteConfirm(String researchTaskId);
+	public Map<String, Object> deleteSubVo(List<Integer> ids);
+}

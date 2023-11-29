@@ -1,0 +1,21 @@
+package egovframework.ksdmWeb.admin.adminInsectInfo.service.impl;
+
+import java.util.List;
+
+import egovframework.ksdmWeb.admin.adminInsectInfo.service.AdminInsectInfoVo;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import egovframework.ksdmWeb.common.vo.InsectStatusVo;
+import egovframework.ksdmWeb.common.vo.InsectVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("adminInsectInfoMapper")
+public interface AdminInsectInfoMapper {
+
+	int selectInsectTotalCount();
+	List<AdminInsectInfoVo> selectInsectList(PagingVo pagingVo);
+	public void insertInsectInfo(InsectVo insectVo) throws Exception;
+	public void insertInsectStatus(InsectStatusVo insectStatusVo) throws Exception;
+	public void modifyInsectInfo(InsectVo insectVo) throws Exception;
+	public void deleteInsectStatus(String insectNum) throws Exception;
+	public void deleteInsectInfo(String insectNum) throws Exception;
+}

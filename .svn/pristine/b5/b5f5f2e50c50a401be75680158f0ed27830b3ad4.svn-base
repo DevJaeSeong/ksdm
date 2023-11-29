@@ -1,0 +1,12 @@
+package egovframework.ksdmWeb.admin.boardManagement.common.service.impl;
+
+import egovframework.ksdmWeb.common.vo.BoardVo;
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("adminBoardMapper")
+public interface AdminBoardMapper {
+
+	public void insertBoard(BoardVo boardVo) throws Exception;
+	public void deleteBoard(BoardVo boardVo) throws Exception;
+	public void updateBoard(BoardVo boardVo) throws Exception;
+}

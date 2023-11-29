@@ -1,0 +1,213 @@
+package egovframework.ksdmWeb.admin.researchData.service.impl;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import egovframework.ksdmWeb.admin.researchData.service.ResearchDataService;
+import egovframework.ksdmWeb.admin.researchData.service.ResearchDataVo;
+import egovframework.ksdmWeb.common.paging.PagingMaker;
+import egovframework.ksdmWeb.common.paging.PagingVo;
+import lombok.extern.slf4j.Slf4j;
+
+@Service("researchDataService")
+@Slf4j
+public class ResearchDataServiceImpl implements ResearchDataService {
+
+	@Resource(name = "researchDataMapper")
+	private ResearchDataMapper researchDataMapper;
+	
+	@Resource(name = "pagingMaker")
+	private PagingMaker pagingMaker;
+
+	@Override
+	public List<ResearchDataVo> getAllSubjectList() {
+		log.debug("getAllSubjectList()시작");
+		
+		List<ResearchDataVo> researchDataVos = null;
+		
+		try {
+			
+			researchDataVos = researchDataMapper.getAllSubjectList();
+			
+		} catch (Exception e) {
+
+			log.error("DB에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getAllSubjectList()끝");
+		return researchDataVos;
+	}
+
+	@Override
+	public Map<String, Object> getResearchData(PagingVo pagingVo) {
+		log.debug("getResearchData() 시작");
+		
+		Map<String, Object> data = null;
+		
+		try {
+			
+			data = pagingMaker.pagingMake(pagingVo, researchDataMapper.getResearchDataTotalCount(pagingVo));
+			List<ResearchDataVo> researchDataVos = researchDataMapper.getResearchData((PagingVo) data.get("pagingVo"));
+			data.put("researchDataVos", researchDataVos);
+			data.remove("pagingVo");
+			
+		} catch (Exception e) {
+			
+			log.error("DB 에러");
+			e.printStackTrace();
+		}
+		
+		log.debug("getResearchData() 끝");
+		return data;
+	}
+
+	@Override
+	public Map<String, Object> uploadResearchData(MultipartFile file) {
+		log.debug("uploadResearchData() 시작");
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		try {
+			
+			dataInsert(file);
+			result.put("result", "success");
+			
+		} catch (Exception e) {
+
+			result.put("result", "uploadFail");
+			log.error("엑셀등록 실패");
+			e.printStackTrace();
+		}
+		
+		log.debug("uploadResearchData() 끝");
+		return result;
+	}
+
+	private void dataInsert(MultipartFile file) throws Exception {
+		log.debug("dataInsert() 시작");
+		
+		Workbook workbook = new XSSFWorkbook(file.getInputStream());
+		
+		for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
+			log.debug("sheet 반복 시작: {}", sheetIndex);
+			
+			Sheet sheet = workbook.getSheetAt(sheetIndex);
+			Iterator<Row> rowIterator = sheet.iterator();
+			
+			while (rowIterator.hasNext()) {
+				log.debug("cell 반복 시작");
+				
+				Row row = rowIterator.next();
+				ResearchDataVo researchDataVo = new ResearchDataVo();
+				String value;
+				
+				value = row.getCell(0).getStringCellValue();
+				researchDataVo.setTaskName(value);
+				
+				value = row.getCell(1).getStringCellValue();
+				researchDataVo.setTaskId(value);
+				
+				value = row.getCell(2).getStringCellValue();
+				researchDataVo.setResearchTaskName(value);
+				
+				value = row.getCell(3).getStringCellValue();
+				researchDataVo.setResearchDataNum(value);
+				
+				value = row.getCell(4).getStringCellValue();
+				researchDataVo.setResearchDate(value);
+				
+				value = row.getCell(5).getStringCellValue();
+				researchDataVo.setResearchStartTime(value);
+				
+				value = row.getCell(6).getStringCellValue();
+				researchDataVo.setResearchEndTime(value);
+				
+				value = row.getCell(7).getStringCellValue();
+				researchDataVo.setUserName(value);
+				
+				value = row.getCell(8).getStringCellValue();
+				researchDataVo.setResearchUsers(value);
+				
+				value = row.getCell(9).getStringCellValue();
+				researchDataVo.setSubjectWeatherName(value);
+				
+				value = row.getCell(10).getStringCellValue();
+				researchDataVo.setSubjectTemp(value);
+				
+				value = row.getCell(11).getStringCellValue();
+				researchDataVo.setSubjectPlace(value);
+				
+				value = row.getCell(12).getStringCellValue();
+				researchDataVo.setSubjectPosX(value);
+				
+				value = row.getCell(13).getStringCellValue();
+				researchDataVo.setSubjectPosY(value);
+				
+				value = row.getCell(14).getStringCellValue();
+				researchDataVo.setSubjectAltitude(value);
+				
+				value = row.getCell(15).getStringCellValue();
+				researchDataVo.setSubjectPlaceType(value);
+				
+				value = row.getCell(16).getStringCellValue();
+				researchDataVo.setSubjectActive(value);
+				
+				value = row.getCell(17).getStringCellValue();
+				researchDataVo.setInsectNum(value);
+				
+				value = row.getCell(18).getStringCellValue();
+				researchDataVo.setSubjectStatus(value);
+				
+				value = row.getCell(18).getStringCellValue();
+				researchDataVo.setSubjectNum(value);
+				
+				value = row.getCell(19).getStringCellValue();
+				researchDataVo.setSubjectName(value);
+				
+				value = row.getCell(20).getStringCellValue();
+				researchDataVo.setPestInfestationLevel(value);
+				
+				value = row.getCell(21).getStringCellValue();
+				researchDataVo.setPestExistencePosition(value);
+				
+				value = row.getCell(22).getStringCellValue();
+				researchDataVo.setSubjectNote(value);
+				
+				value = row.getCell(23).getStringCellValue();
+				researchDataVo.setDistFromroad(value);
+				
+				value = row.getCell(24).getStringCellValue();
+				researchDataVo.setRoadType(value);
+				
+				log.debug("cell 반복 끝");
+				
+				try {
+					
+					researchDataMapper.insertResearchData(researchDataVo);
+					
+				} catch (Exception e) {
+
+					log.error("DB에러");
+					e.printStackTrace();
+					continue;
+				}
+			}
+			
+			log.debug("sheet 반복 끝");
+		}
+		
+		log.debug("dataInsert() 끝");
+	}
+}

@@ -1,0 +1,59 @@
+package egovframework.ksdmWeb.general.insectInfo.web;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class InsectInfoController {
+	
+	/**
+	 * 외래곤충용어 화면.
+	 */
+	@GetMapping("/insectWordPage.do")
+	public String insectWordPage() {
+		log.debug("insectWordPage.do");
+		
+		return "/general/insectInfo/insectWordPage";
+	}
+	
+	/**
+	 * 외래곤충검색 화면.
+	 */
+	@GetMapping("/insectSearchPage.do")
+	public String insectSearchPage(Model model) {
+		log.debug("insectSearchPage.do");
+		
+		return "/general/insectInfo/insectSearchPage";
+	}
+	
+	/**
+	 * 외부에서 외래곤충검색.
+	 */
+	@GetMapping("/insectSearchByKeyword.do")
+	public String insectSearchByKeyword(@RequestParam("searchKeyWord") String searchKeyWord, Model model) {
+		log.debug("insectSearchPage.do");
+		log.debug("<== searchKeyWord: {}", searchKeyWord);
+		
+		model.addAttribute("searchKeyWord", searchKeyWord);
+		
+		return "/general/insectInfo/insectSearchPage";
+	}
+	
+	/**
+	 * 외래곤충상세 화면
+	 */
+	@GetMapping("/insectDetailPage.do")
+	public String insectDetailPage(@RequestParam("insectNum") String insectNum, Model model) {
+		log.debug("insectDetailPage.do");
+		log.debug("<== insectNum: {}", insectNum);
+		
+		model.addAttribute("insectNum", insectNum);
+		
+		return "/general/insectInfo/insectDetailPage";
+	}
+}

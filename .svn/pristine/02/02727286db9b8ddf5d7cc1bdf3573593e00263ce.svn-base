@@ -1,0 +1,12 @@
+package egovframework.ksdmWeb.admin.boardManagement.common.service;
+
+import java.util.Map;
+
+import egovframework.ksdmWeb.common.vo.BoardVo;
+
+public interface AdminBoardService {
+
+	public Map<String, Object> boardRegistConfirm(BoardVo boardVo);
+	public int boardDeleteConfirm(BoardVo boardVo);
+	public Map<String, Object> boardModifyConfirm(BoardVo boardVo);
+}

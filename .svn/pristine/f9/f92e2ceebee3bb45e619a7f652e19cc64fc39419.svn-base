@@ -1,0 +1,63 @@
+package egovframework.ksdmWeb.user.main.web;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import egovframework.ksdmWeb.security.UserDetailVo;
+import egovframework.ksdmWeb.user.main.service.UserMainService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * 이 클래스는 User가 사용하는 모바일 메인 화면 Controller입니다.
+ */
+
+@Controller
+@RequestMapping("/user/*")
+@Slf4j
+public class UserMainController {
+	
+	@Resource(name = "userMainService")
+	private UserMainService userMainService;
+	
+	@GetMapping("/mainPage.do")
+	public String main() {
+		log.debug("/main.do");
+		
+		return "user/main/mobileMainPage";
+	}
+	
+	@GetMapping("/accountInfoPage.do")
+	public String accountInfoPage(ModelMap model) {
+		log.debug("/accountInfoPage.do");
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		UserDetailVo userDetailVo = (UserDetailVo) authentication.getDetails();
+		
+		model.addAttribute("userDetailVo", userDetailVo);
+		
+		return "user/accountInfo/accountInfoPage";
+	}
+	
+	@PostMapping("/changePassword.do")
+	@ResponseBody
+	public Object changePassword(@RequestBody Map<String, String> reciveData) {
+		log.debug("<== {}", reciveData);
+		
+		Map<String, Object> result = userMainService.changePassword(reciveData);
+		
+		log.debug("==> {}", result);
+		return result;
+	}
+}

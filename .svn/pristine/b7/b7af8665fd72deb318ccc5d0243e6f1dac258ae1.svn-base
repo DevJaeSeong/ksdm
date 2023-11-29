@@ -1,0 +1,11 @@
+package egovframework.ksdmWeb.common.vo;
+
+import lombok.Data;
+
+@Data
+public class InsectStatusVo {
+
+	private String insectStatusCode;
+	private String insectStatusName;
+	private String insectNum;
+}

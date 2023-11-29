@@ -1,0 +1,8 @@
+package egovframework.ksdmWeb.admin.common.service.impl;
+
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+
+@Mapper("adminCommonMapper")
+public interface AdminCommonMapper {
+
+}

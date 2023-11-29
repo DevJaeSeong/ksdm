@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+    
+		<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+		<typeAlias alias="String" type="java.lang.String"/>
+		
+		<!-- security -->
+		<typeAlias alias="UserVo" type="egovframework.ksdmWeb.security.UserVo"/>
+		<typeAlias alias="UserDetailVo" type="egovframework.ksdmWeb.security.UserDetailVo"/>
+		
+		<!-- common -->
+		<typeAlias alias="PagingVo" type="egovframework.ksdmWeb.common.paging.PagingVo"/>
+		<typeAlias alias="InsectVo" type="egovframework.ksdmWeb.common.vo.InsectVo"/>
+		<typeAlias alias="InsectStatusVo" type="egovframework.ksdmWeb.common.vo.InsectStatusVo"/>
+		<typeAlias alias="BoardVo" type="egovframework.ksdmWeb.common.vo.BoardVo"/>
+		<typeAlias alias="InsectForecastVo" type="egovframework.ksdmWeb.common.vo.InsectForecastVo"/>
+		<typeAlias alias="SubVo" type="egovframework.ksdmWeb.common.vo.SubVo"/>
+		<typeAlias alias="TaskVo" type="egovframework.ksdmWeb.common.vo.TaskVo"/>
+		<typeAlias alias="FileVo" type="egovframework.ksdmWeb.common.vo.FileVo"/>
+		<typeAlias alias="UserInsectVo" type="egovframework.ksdmWeb.common.vo.UserInsectVo"/>
+		
+		<!-- general -->
+		<typeAlias alias="InsectDistributionVo" type="egovframework.ksdmWeb.general.insectDistribution.vo.InsectDistributionVo"/>
+		
+		<!-- admin -->
+		<typeAlias alias="AuthorityVo" type="egovframework.ksdmWeb.admin.userManagement.service.AuthorityVo"/>
+		<typeAlias alias="ResearchAreaVo" type="egovframework.ksdmWeb.admin.userManagement.service.ResearchAreaVo"/>
+		<typeAlias alias="ResearchDataVo" type="egovframework.ksdmWeb.admin.researchData.service.ResearchDataVo"/>
+		<typeAlias alias="TaskAndResearchVo" type="egovframework.ksdmWeb.admin.taskAndResearch.service.TaskAndResearchVo"/>
+		<typeAlias alias="AdminInsectInfoVo" type="egovframework.ksdmWeb.admin.adminInsectInfo.service.AdminInsectInfoVo"/>
+		<typeAlias alias="ForecastVo" type="egovframework.ksdmWeb.admin.forecast.vo.ForecastVo"/>
+		
+		<!-- user -->
+		<typeAlias alias="ResearchTaskVo" type="egovframework.ksdmWeb.user.common.vo.ResearchTaskVo"/>
+		<typeAlias alias="ParticipatedResearchVo" type="egovframework.ksdmWeb.user.common.vo.ParticipatedResearchVo"/>
+		<typeAlias alias="ResearchVo" type="egovframework.ksdmWeb.user.research.service.ResearchVo"/>
+				
+    </typeAliases>
+</configuration>

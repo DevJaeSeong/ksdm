@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.general.insectForecast.service.impl.InsectForecastMapper">
+
+	<resultMap type="InsectForecastVo" id="InsectForecastVo">
+		<result property="oriImageName"				column="ORI_IMAGE_NAME"/>
+		<result property="saveImageName" 			column="SAVE_IMAGE_NAME"/>
+		<result property="imageExtension" 			column="IMAGE_EXTENSION"/>
+		<result property="taskId" 					column="TASK_ID"/>
+		<result property="imageId" 					column="IMAGE_ID"/>
+		<result property="regDate" 					column="REG_DATE"/>
+		<result property="userId" 					column="USER_ID"/>
+	</resultMap>
+	
+	<select id="selectInsectImage" resultMap="InsectForecastVo">
+		SELECT 
+			IMAGE_ID, 
+			ORI_IMAGE_NAME, 
+			SAVE_IMAGE_NAME, 
+			TASK_ID, 
+			IMAGE_EXTENSION, 
+			REG_DATE, 
+			USER_ID
+		FROM 
+			FORECAST_IMAGE_TB
+		WHERE
+			TASK_ID = #{taskId}
+	</select>
+	
+	<update id="updateViews" parameterType="String">
+		UPDATE
+			FORECAST_TB
+		SET
+			VIEWS = VIEWS + 1
+		WHERE
+			FORECAST_ID = #{forecastId}
+	</update>
+	
+</mapper>	

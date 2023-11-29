@@ -1,0 +1,122 @@
+@charset "utf-8";
+/************************************************************************
+ * 프로젝트   : 한남대학교 외래무척추동물
+ * 파일명      : content.css
+ * 설명         : 사업관리시스템
+ * 작성일      : 2023.01.12
+ * 작성자      : jsj
+ * 버   전      : 1.0
+************************************************************************/
+
+/* K-SDM-UI-01 과제내역 시작 */
+.profile_box {width: 100%; padding: 15px; margin: 0 auto; position: relative;}
+.profile_box::after {content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 200px; /*background: linear-gradient(to bottom, #0770bb 0%,#199da3 100%);*/ z-index: -1;background: url(../images/banner_img.jpg); background-size: cover;}
+.profile_inner {width: 100%; text-align: center;}
+.profile_img {width: 100%; max-width: 80px; margin: 0 auto; border-radius: 50%; overflow: hidden; background-color: #fff;}
+.profile_img img {width: 100%;}
+.profile_info {width: 100%; text-align: center;}
+.profile_info p:nth-of-type(1) {font-size: 25px; text-align: center;}
+.profile_info p:nth-of-type(2) {line-height: 60px; font-size: 20px; min-height: 60px; background-color: #fff; border-radius: 20px; box-shadow: 0 1px 6px #c9c9c9;}
+.profile_info p:nth-of-type(2)>* {font-size: 20px;}
+
+.project_box {width: 100%; height: 20%; padding: 0 20px; overflow: hidden; padding-bottom: 50px;}
+.con_title {font-size: 20px; font-weight: 500; padding: 10px 0 10px 20px; background-image: url(../images/top01_img.png); background-position: 0 50%; background-repeat: no-repeat; background-size: 15px; width: 49%; display: inline-block;}
+/* K-SDM-UI-01 과제내역 끝 */
+
+/* K-SDM-UI-02 조사등록 시작 */
+.con_box {width: 100%; padding: 0 15px 50px 15px;}
+.con_box_02 {width: 100%; padding: 0 15px 15px;}
+.t_list_box>div>button{border: 1px solid #c9c9c9; border-radius: 5px; font-family: 'Noto3'; padding: 3px;}
+.t_list_box button>img{width: 8px; height: 8px;}
+.t_list_box button>img {position: relative; top: -1px; right: 2px;}
+.t_search_box ul {background-color: #ffffff; border: 1px solid #ccc; line-height: normal;}
+.t_search_box>ul>li {padding: 5px;}
+/* K-SDM-UI-02 조사등록 끝 */
+
+/* log_box 시작 */
+.log_box {height: 100vh; width: 100%; display: flex; align-items: center; background-image: url(../images/log_bg.png); background-repeat: no-repeat; background-position: center; background-size: cover;}
+.log_box_inner {display: inline-block; width: 80%; text-align: center; margin: auto; background-color: #216cc5; padding: 60px 0;}
+.log_title {text-align: center; font-size: 3em; font-weight: 600; color: #fff;}
+.lobin_box {width: 100%; text-align: center;}
+.lobin_box label {display: inline-block; width: 80%; text-align: left; font-size: 18px; color: #fff;}
+.lobin_box input {width: 80%; min-height: 40px;}
+.login_btn {width: 80%; min-height: 40px; background-color: #505050;}
+.login_btn span {color: #fff; font-size: 1.3rem;}
+/* log_box 끝 */
+/* .respon_box 시작 */
+.respon_box {display: block;text-align: center;vertical-align: middle; margin: auto; width: 100%;}
+.respon_box>div {width: 100%;}
+.direct_btn {display: inline-block;text-align: left; width: 80%; padding: 30px 0; background: #060047;}
+.direct_btn>p {margin-left: 27px;}
+.direct_btn>p ,.direct_btn span {font-size: 25px; color: #fff; font-weight: 500;line-height: 40px; vertical-align: middle;display: inline-block;}
+.respon_box >.direct_btn>img { float: right; margin-right: 23px; margin-top: 2px;}
+
+.icon_01 {position: relative;}
+.icon_01::before {content: "";background: url(../images/icon_report.png);width: 50px;height: 50px; display: inline-block;vertical-align: middle; margin-right: 53px;}
+.icon_01::after {content: "";width: 2px;height: 70px;background-color: #fff;display: inline-block; position: absolute; top: 50%;left: 30%; transform: translate( -50%, -50%);}
+
+.icon_02 {position: relative;}
+.icon_02::before {content: "";background: url(../images/icon_report02.png);width: 50px;height: 50px; display: inline-block;vertical-align: middle; margin-right: 53px;}
+.icon_02::after {content: "";width: 2px;height: 70px;background-color: #fff;display: inline-block; position: absolute; top: 50%;left: 30%; transform: translate( -50%, -50%);}
+
+.icon_03 {position: relative;}
+.icon_03::before {content: "";background: url(../images/icon_upload.png);width: 50px;height: 50px; display: inline-block;vertical-align: middle; margin-right: 53px;}
+.icon_03::after {content: "";width: 2px;height: 70px;background-color: #fff;display: inline-block; position: absolute; top: 50%;left: 26%; transform: translate( -50%, -50%);}
+
+.icon_04 {position: relative;}
+.icon_04::before {content: "";background: url(../images/icon_myinfo.png);width: 50px;height: 50px; display: inline-block;vertical-align: middle; margin-right: 53px;}
+.icon_04::after {content: "";width: 2px;height: 70px;background-color: #fff;display: inline-block; position: absolute; top: 50%;left: 37%; transform: translate( -50%, -50%);}
+
+.c_navy {background-color: #ffffff; background-color: #216cc5;}
+.c_navy:hover {background-color: #184daa;transition: all 0.2s ease-in;}
+/* .respon_box 끝 */
+
+/* media 425px */
+@media (max-width:425px) {
+  .direct_btn>p ,.direct_btn span {font-size: 20px;}
+  .icon_01::before,
+  .icon_02::before,
+  .icon_03::before,
+  .icon_04::before {margin-right: 40px;}
+  .icon_01::after,
+  .icon_02::after  {left: 34%;}
+  .icon_03::after {left: 28%;}
+  .icon_04::after {left: 42%;}
+  .under {width: 115px;}
+  .contTbl>*>tr>td {font-size: 12px;}
+  .contTbl>thead>tr>th {padding: 10px 2px;}
+}
+/* media 375px */
+@media (max-width:375px) {
+  .direct_btn>p ,.direct_btn span {font-size: 19px;}
+  .direct_btn>p {margin-left: 16px;}
+  .icon_01::before,
+  .icon_02::before,
+  .icon_03::before,
+  .icon_04::before {margin-right: 35px;}
+  .icon_01::after,
+  .icon_02::after  {left: 29%;}
+  .icon_04::after {left: 36%;}
+  .icon_01::before,
+  .icon_02::before,
+  .icon_03::before,
+  .icon_04::before {width: 40px;height: 40px;background-size: cover;}
+  h1 {font-size: 16px;}
+  .icon_03::after {left: 25%;}
+ /* .log_out {font-size: 13px;} */
+ .under {max-width: 80px; width: 100%;}
+ .respon_box >.direct_btn>img {margin-right: 18px;}
+}
+/* media 320px */
+@media (max-width:332px) {
+   .direct_btn>p ,.direct_btn span {font-size: 22px;}
+   .direct_btn>p {margin-left: 25px;}
+  .icon_01::before,
+  .icon_02::before,
+  .icon_03::before,
+  .icon_04::before {display: none;}
+  .icon_01::after,
+  .icon_02::after,
+  .icon_03::after,
+  .icon_04::after  {display: none;}
+} 

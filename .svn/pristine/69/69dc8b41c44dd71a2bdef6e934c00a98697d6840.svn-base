@@ -1,0 +1,125 @@
+package egovframework.ksdmWeb.security;
+
+import java.util.Collections;
+
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+/**
+ * Spring Security 설정 클래스.
+ */
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Resource(name = "customUserDetailsService")
+	private CustomUserDetailsService customUserDetailsService;
+	
+	//패스워드 인코더
+	@Bean("passwordEncoder")
+	public PasswordEncoder passwordEncoder() {
+		
+		/*
+		 *  인자값 4~31 범위를 가지며 값이 높을수록 최초 서버구동, 로그인시 걸리는 시간 증가. (미 설정시 기본값 10)
+		 *  14 값은 임도서버 기준 약 1초 정도 걸림.
+		 */
+		return new BCryptPasswordEncoder(14);
+	}
+	
+	// 인증처리 인터페이스 구현체
+	@Bean("authenticationManager")
+	public AuthenticationManager authenticationManager() throws Exception {
+		
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		/*
+		 * 인증과정에서 principal 값을 문자열로 강제 변환할지 여부.
+		 * 아래 boolean값에 따라 principal 값이 정해짐.
+		 * true: UserDetails.getUsername()
+		 * false: UserDetails
+		 */
+		authenticationProvider.setForcePrincipalAsString(false);
+		authenticationProvider.setUserDetailsService(customUserDetailsService);
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		/*
+		 * 인증과정에서 UserNotFoundException 발생시 해당 예외를 숨길지 여부.
+		 * 입력한 ID가 DB에 저장되어있는지 유무를 알리고 싶지 않다면 true로 설정.
+		 */
+		authenticationProvider.setHideUserNotFoundExceptions(false);
+		
+		ProviderManager authenticationManager = new ProviderManager(Collections.singletonList(authenticationProvider));
+		/*
+		 * 인증후 자격증명(비밀번호)을 제거할지 여부.
+		 * 보통 인증후에는 서버가 비밀번호를 가지고있을 필요가 없으므로 보안상 true로 설정.
+		 */
+		authenticationManager.setEraseCredentialsAfterAuthentication(true);
+		
+		return authenticationManager;
+	}
+
+	// 세션저장소
+	@Bean("sessionRegistry")
+	public SessionRegistry sessionRegistry() {
+		
+	    return new SessionRegistryImpl();
+	}
+	
+	// HTTP 요청의 URL과 관련된 보안 문제 방지
+    @Bean("httpFirewall")
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+    	
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedSlash(true);						// URL에 '/' 허용하는지 여부
+        firewall.setAllowSemicolon(false); 							// URL에 ';' 허용하는지 여부
+        
+        return firewall;
+    }
+	
+	//Spring Security에서 세션 관련 이벤트를 처리할 수 있게 해주는 설정, 처리내용은 SessionListener 에 구현.
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+    	
+        return new HttpSessionEventPublisher();
+    }
+    
+	// 보안 설정
+	@Override
+    protected void configure(HttpSecurity http) throws Exception {
+		
+        http
+        	.headers()
+        		.xssProtection()
+        			.block(true)
+        			.and()
+        		.and()
+            .authorizeRequests()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+                .anyRequest().permitAll()
+                .and()
+            .csrf()															// csrf 방어 활성화, 클라이언트는 GET을 제외한 요청시 헤더에 "${_csrf.headerName}": "${_csrf.token}" 을 포함하여야 서버측에서 수용가능
+            	.and()
+            .sessionManagement()											// 세션 보안 정책 설정
+            	.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            	.invalidSessionUrl("/invalidatedSession.do")				// 유효하지않은 세션으로 접근시 리다이렉트
+            	.maximumSessions(1)
+            	.maxSessionsPreventsLogin(true)								// 동시 로그인 차단(true), 로그인시 새로운 세션 생성후 기존 세션 무효화 하는 정책시 false
+            	.sessionRegistry(sessionRegistry())
+            	.expiredUrl("/expiredSession.do");							// 세션 만료시 리다이렉트
+    }
+}

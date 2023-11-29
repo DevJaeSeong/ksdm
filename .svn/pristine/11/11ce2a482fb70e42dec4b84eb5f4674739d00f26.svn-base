@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            
+            <!--
+            <PatternLayout pattern="%d{HH:mm:ss} %5p [%-21t] (%-4L) %-90logger %-70C - %-30M - %m%n" />
+            -->
+            <PatternLayout pattern="%d{HH:mm:ss} %5p (%-4L) %-35C{1} - %-30M - %m%n" />
+            
+        </Console>
+    </Appenders>
+    <Loggers>
+
+        <Root level="DEBUG">
+            <AppenderRef ref="console" />
+        </Root>
+        
+        <!-- ********* 임의의 클래스/메소드 시작 ********* -->
+        <Logger name="egovframework.imdo.api.service.impl.ApiMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.socketServer.SocketServerMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.yimdoSystem.YimdoSystemMapper.getMountainWeatherVo" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.yimdoSystem.YimdoSystemMapper.getElementInfoVoList" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.yimdoSystem.apiDataFetcher.ApiDataFetcherMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.yimdoSystem.breakerController.BreakerControllerMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.imdoWeb.common.service.impl.CommonDataMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.imdoWeb.security.SecurityMapper.getUserByIdForLogin" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.imdoWeb.member.main.service.impl.MemberMapper.getMemberVoById" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.imdoWeb.admin.breakerStatus.service.impl.BreakerStatusMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="egovframework.imdo.imdoWeb.admin.imdoAccessHistory.service.impl.ImdoAccessHistoryMapper" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <!-- ********* 임의의 클래스/메소드 끝 ********* -->
+        
+        <!-- mybatis -->
+        <Logger name="org.mybatis.spring" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+
+		<!-- ibatis -->
+        <Logger name="org.apache.ibatis" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+
+		<!-- jdbc -->
+        <Logger name="org.springframework.jdbc" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+		<!-- security -->
+        <Logger name="org.springframework.security" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+		<!-- beans -->
+        <Logger name="org.springframework.beans" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+		<!-- context -->
+        <Logger name="org.springframework.context" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+		<!-- spring web -->
+        <Logger name="org.springframework.web" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <Logger name="java.sql" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+        <!-- log SQL with timing information, post execution -->
+        <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
+    </Loggers>
+</Configuration>

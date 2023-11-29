@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	
+<mapper namespace="egovframework.ksdmWeb.general.account.service.impl.AccountMapper">
+	
+	<insert id="insertAccount">
+		INSERT INTO
+			USER_INFO_TB
+			(
+				USER_ID
+				, USER_PW
+			)
+			VALUES
+			(
+				#{userId}
+				, #{userPw}
+			)
+	</insert>
+	
+</mapper>
